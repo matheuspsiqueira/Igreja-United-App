@@ -1,53 +1,62 @@
 import { StyleSheet } from 'react-native';
 
-export const bibliaStyles = StyleSheet.create({
+export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 10,
+    backgroundColor: '#fdfdfd',
+    paddingTop: 20,
   },
-  topBar: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    marginBottom: 10,
-  },
-  versionPicker: {
-    height: 40,
+  versaoPicker: {
+    height: 50,
     width: 120,
-  },
-  sectionHeader: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    marginTop: 5,
-    borderRadius: 5,
-  },
-  sectionHeaderText: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  bookContainer: {
+    alignSelf: 'flex-start',
     marginLeft: 10,
-    marginTop: 5,
+    backgroundColor: '#ffffff',
+    borderRadius: 6,
+    elevation: 2,
   },
-  bookText: {
-    fontSize: 14,
+  scroll: {
+    padding: 10,
+  },
+  folderButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#e0e0e0',
+    padding: 10,
+    borderRadius: 8,
+    marginVertical: 5,
+  },
+  folderText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 8,
     color: '#333',
+  },
+  bookItem: {
+    fontSize: 16,
     paddingVertical: 5,
+    paddingLeft: 20,
+    color: '#007BFF',
   },
   chapterContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginLeft: 10,
+    marginTop: 5,
+  },
+  chapterButton: {
+    padding: 8,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5,
+    margin: 4,
   },
   chapterText: {
-    margin: 2,
-    padding: 5,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 4,
+    fontSize: 14,
+    color: '#333',
   },
-  text: {
-    marginTop: 20,
+  bibleText: {
     fontSize: 16,
-    lineHeight: 24,
+    marginTop: 10,
+    lineHeight: 22,
+    color: '#222',
   },
 });
