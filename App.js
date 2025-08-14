@@ -8,6 +8,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from './pages/Home';
 import Informacoes from './pages/Informacoes';
 import Series from './pages/Series';
+import Biblia from './pages/Biblia'
 
 // Stacks para cada aba
 const HomeStack = createStackNavigator();
@@ -25,6 +26,15 @@ function InfoStackScreen() {
     <InfoStack.Navigator screenOptions={{ headerShown: false }}>
       <InfoStack.Screen name="Informações" component={Informacoes} />
     </InfoStack.Navigator>
+  );
+}
+
+const BibliaStack = createStackNavigator();
+function BibliaStackScreen() {
+  return (
+    <BibliaStack.Navigator screenOptions={{ headerShown: false }}>
+      <BibliaStack.Screen name="Bíblia" component={Biblia} />
+    </BibliaStack.Navigator>
   );
 }
 
@@ -49,6 +59,7 @@ export default function App() {
             let iconName;
             if (route.name === 'Início') iconName = 'home';
             else if (route.name === 'Informações') iconName = 'information-circle';
+            else if (route.name === 'Bíblia') iconName = 'book';
             else if (route.name === 'Séries') iconName = 'play-circle';
             return <Ionicons name={iconName} size={size} color={color} />;
           },
@@ -58,6 +69,7 @@ export default function App() {
       >
         <Tab.Screen name="Início" component={HomeStackScreen} />
         <Tab.Screen name="Informações" component={InfoStackScreen} />
+        <Tab.Screen name="Bíblia" component={BibliaStackScreen} />
         <Tab.Screen name="Séries" component={SeriesStackScreen} />
       </Tab.Navigator>
     </NavigationContainer>
