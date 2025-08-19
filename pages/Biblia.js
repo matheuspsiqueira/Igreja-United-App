@@ -20,9 +20,6 @@ export default function Biblia() {
   const [token, setToken] = useState(null);
 
   const scrollRef = useRef();
-  const textoRef = useRef();
-
-  const BIBLE_API_TOKEN = 'SEU_TOKEN_AQUI'; // substitua pelo token do .env
 
   // Criar usuário e gerar token
   async function criarUsuario() {
@@ -92,69 +89,47 @@ export default function Biblia() {
     setLivroSelecionado(livro);
     setCapitulos(Array.from({ length: livro.chapters }, (_, i) => i + 1));
     setTextoBiblia('');
-    setCapituloSelecionado(cap);
+    setCapituloSelecionado(null); // reset capítulo
     setLoading(false);
     setAntigoAberto(false);
     setNovoAberto(false);
-
-    // Scroll para capítulos
-    setTimeout(() => {
-      textoRef.current?.measureLayout(
-        scrollRef.current.getInnerViewNode(),
-        (x, y) => {
-          scrollRef.current?.scrollTo({ y: y, animated: true });
-        }
-      );
-    }, 100);
   }
 
   // Selecionar capítulo
   async function selecionarCapitulo(cap) {
-  if (!livroSelecionado) return;
+    if (!livroSelecionado) return;
 
-  setCapituloSelecionado(null); // reseta antes de selecionar
-  setLoading(true);
-  setTextoBiblia('');
+    setCapituloSelecionado(null);
+    setLoading(true);
+    setTextoBiblia('');
 
-  const url = `https://www.abibliadigital.com.br/api/verses/${versao}/${livroSelecionado.abbrev.pt}/${cap}`;
-  const data = await fetchComToken(url);
+    const url = `https://www.abibliadigital.com.br/api/verses/${versao}/${livroSelecionado.abbrev.pt}/${cap}`;
+    const data = await fetchComToken(url);
 
-  if (data?.verses && Array.isArray(data.verses)) {
-    setTextoBiblia(data.verses.map(v => `${v.number}. ${v.text}`).join('\n\n'));
-    setCapituloSelecionado(cap); // só seta depois de carregar
-  } else {
-    setTextoBiblia('Erro ao carregar capítulo.');
-    setCapituloSelecionado(cap);
+    if (data?.verses && Array.isArray(data.verses)) {
+      setTextoBiblia(data.verses.map(v => `${v.number}. ${v.text}`).join('\n\n'));
+      setCapituloSelecionado(cap);
+    } else {
+      setTextoBiblia('Erro ao carregar capítulo.');
+      setCapituloSelecionado(cap);
+    }
+
+    setLoading(false);
   }
-
-  setLoading(false);
-
-  // Scroll para o texto
-  setTimeout(() => {
-    scrollRef.current?.scrollToEnd({ animated: true });
-  }, 100);
-}
 
   // Pull-to-refresh
   const onRefresh = async () => {
-  setRefreshing(true);
-
-  // Fecha pastas e limpa seleção
-  setAntigoAberto(false);
-  setNovoAberto(false);
-  setLivroSelecionado(null);
-  setCapituloSelecionado(null);
-  setTextoBiblia('');
-  setCapitulos([]);
-
-  // Recarrega livros
-  await carregarLivros();
-
-  // Scroll para topo
-  scrollRef.current?.scrollTo({ y: 0, animated: true });
-
-  setRefreshing(false);
-};
+    setRefreshing(true);
+    setAntigoAberto(false);
+    setNovoAberto(false);
+    setLivroSelecionado(null);
+    setCapituloSelecionado(null);
+    setTextoBiblia('');
+    setCapitulos([]);
+    await carregarLivros();
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+    setRefreshing(false);
+  };
 
   useEffect(() => { inicializarToken(); }, []);
   useEffect(() => { if (token) carregarLivros(); }, [token]);
@@ -173,7 +148,7 @@ export default function Biblia() {
 
       {/* Antigo Testamento */}
       <TouchableOpacity
-        style={[styles.folderButton, styles.folderAntigo]} // aplica a cor marrom
+        style={[styles.folderButton, styles.folderAntigo]}
         onPress={() => setAntigoAberto(!antigoAberto)}
       >
         <Icon name={antigoAberto ? 'folder-open' : 'folder'} size={22} color="#fff" />
@@ -187,7 +162,7 @@ export default function Biblia() {
 
       {/* Novo Testamento */}
       <TouchableOpacity
-        style={[styles.folderButton, styles.folderNovo]} // aplica a cor azul
+        style={[styles.folderButton, styles.folderNovo]}
         onPress={() => setNovoAberto(!novoAberto)}
       >
         <Icon name={novoAberto ? 'folder-open' : 'folder'} size={22} color="#fff" />
@@ -199,7 +174,12 @@ export default function Biblia() {
         </TouchableOpacity>
       ))}
 
-      {/* Título do capítulo */}
+      {/* Cabeçalho */}
+      {livroSelecionado && !capituloSelecionado && (
+        <Text style={styles.selectedTitle}>
+          {livroSelecionado.name}
+        </Text>
+      )}
       {livroSelecionado && capituloSelecionado && (
         <Text style={styles.selectedTitle}>
           {livroSelecionado.name} - {capituloSelecionado}
@@ -209,32 +189,32 @@ export default function Biblia() {
       {/* Capítulos */}
       {capitulos.length > 0 && (
         <View style={styles.chapterContainer}>
-        {capitulos.map((cap, idx) => (
-          <TouchableOpacity
-            key={idx}
-            style={[
-              styles.chapterButton,
-              capituloSelecionado === cap && styles.chapterButtonSelected
-            ]}
-            onPress={() => selecionarCapitulo(cap)}
-          >
-            <Text
+          {capitulos.map((cap, idx) => (
+            <TouchableOpacity
+              key={idx}
               style={[
-                styles.chapterText,
-                capituloSelecionado === cap && styles.chapterTextSelected
+                styles.chapterButton,
+                capituloSelecionado === cap && styles.chapterButtonSelected
               ]}
+              onPress={() => selecionarCapitulo(cap)}
             >
-              {cap}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={[
+                  styles.chapterText,
+                  capituloSelecionado === cap && styles.chapterTextSelected
+                ]}
+              >
+                {cap}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       )}
 
       {/* Texto */}
       {loading && <ActivityIndicator size="large" color="#000" />}
       {textoBiblia !== '' && !loading && (
-        <Text ref={textoRef} style={styles.bibleText}>{textoBiblia}</Text>
+        <Text style={styles.bibleText}>{textoBiblia}</Text>
       )}
     </ScrollView>
   );
