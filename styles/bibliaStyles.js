@@ -42,13 +42,13 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     marginLeft: 10,
-    color: '#000', // preto
+    color: '#fff', // preto
   },
   folderAntigo: {
     backgroundColor: '#c15123',
   },
   folderNovo: {
-    backgroundColor: '#fff',
+    backgroundColor: '#c15123',
   },
   bookItem: {
     fontSize: 16,

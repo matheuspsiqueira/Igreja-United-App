@@ -187,7 +187,7 @@ export default function Biblia() {
         style={[styles.folderButton, styles.folderNovo]}
         onPress={() => setNovoAberto(!novoAberto)}
       >
-        <Icon name={novoAberto ? 'folder-open' : 'folder'} size={22} color="#000" />
+        <Icon name={novoAberto ? 'folder-open' : 'folder'} size={22} color="#fff" />
         <Text style={styles.folderTextNovo}>Novo Testamento</Text>
       </TouchableOpacity>
       {novoAberto && livrosNovo.map((livro, idx) => (
