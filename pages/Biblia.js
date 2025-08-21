@@ -12,14 +12,24 @@ export default function Biblia() {
   const [livroSelecionado, setLivroSelecionado] = useState(null);
   const [capitulos, setCapitulos] = useState([]);
   const [capituloSelecionado, setCapituloSelecionado] = useState(null);
-  const [textoBiblia, setTextoBiblia] = useState('');
+  const [versiculos, setVersiculos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [antigoAberto, setAntigoAberto] = useState(false);
   const [novoAberto, setNovoAberto] = useState(false);
   const [token, setToken] = useState(null);
 
+  // agora armazena chaves (strings) no formato versao:livro:cap:verso
+  const [versiculosMarcados, setVersiculosMarcados] = useState([]);
+
   const scrollRef = useRef();
+
+  // helper para gerar chave única por versículo
+  const getVerseKey = (versoNum) => {
+    const liv = livroSelecionado?.abbrev?.pt ?? '';
+    const cap = capituloSelecionado ?? '';
+    return `${versao}:${liv}:${cap}:${versoNum}`;
+  };
 
   // Criar usuário e gerar token
   async function criarUsuario() {
@@ -88,11 +98,12 @@ export default function Biblia() {
   function selecionarLivro(livro) {
     setLivroSelecionado(livro);
     setCapitulos(Array.from({ length: livro.chapters }, (_, i) => i + 1));
-    setTextoBiblia('');
-    setCapituloSelecionado(null); // reset capítulo
+    setVersiculos([]);
+    setCapituloSelecionado(null);
     setLoading(false);
     setAntigoAberto(false);
     setNovoAberto(false);
+    // não limpamos as marcações; as chaves são únicas por livro/capítulo/verso
   }
 
   // Selecionar capítulo
@@ -101,20 +112,31 @@ export default function Biblia() {
 
     setCapituloSelecionado(null);
     setLoading(true);
-    setTextoBiblia('');
+    setVersiculos([]);
 
     const url = `https://www.abibliadigital.com.br/api/verses/${versao}/${livroSelecionado.abbrev.pt}/${cap}`;
     const data = await fetchComToken(url);
 
     if (data?.verses && Array.isArray(data.verses)) {
-      setTextoBiblia(data.verses.map(v => `${v.number}. ${v.text}`).join('\n\n'));
+      setVersiculos(data.verses);
       setCapituloSelecionado(cap);
     } else {
-      setTextoBiblia('Erro ao carregar capítulo.');
+      setVersiculos([{ number: 0, text: 'Erro ao carregar capítulo.' }]);
       setCapituloSelecionado(cap);
     }
 
     setLoading(false);
+  }
+
+  // Alternar marcação usando chave única
+  function toggleMarcacao(versoNum) {
+    const key = getVerseKey(versoNum);
+    setVersiculosMarcados((prev) => {
+      if (prev.includes(key)) {
+        return prev.filter(k => k !== key);
+      }
+      return [...prev, key];
+    });
   }
 
   // Pull-to-refresh
@@ -124,7 +146,7 @@ export default function Biblia() {
     setNovoAberto(false);
     setLivroSelecionado(null);
     setCapituloSelecionado(null);
-    setTextoBiblia('');
+    setVersiculos([]);
     setCapitulos([]);
     await carregarLivros();
     scrollRef.current?.scrollTo({ y: 0, animated: true });
@@ -152,7 +174,7 @@ export default function Biblia() {
         onPress={() => setAntigoAberto(!antigoAberto)}
       >
         <Icon name={antigoAberto ? 'folder-open' : 'folder'} size={22} color="#fff" />
-        <Text style={[styles.folderText, { color: '#fff' }]}>Antigo Testamento</Text>
+        <Text style={styles.folderTextAntigo}>Antigo Testamento</Text>
       </TouchableOpacity>
       {antigoAberto && livrosAntigo.map((livro, idx) => (
         <TouchableOpacity key={idx} onPress={() => selecionarLivro(livro)}>
@@ -166,13 +188,14 @@ export default function Biblia() {
         onPress={() => setNovoAberto(!novoAberto)}
       >
         <Icon name={novoAberto ? 'folder-open' : 'folder'} size={22} color="#fff" />
-        <Text style={[styles.folderText, { color: '#fff' }]}>Novo Testamento</Text>
+        <Text style={styles.folderTextNovo}>Novo Testamento</Text>
       </TouchableOpacity>
       {novoAberto && livrosNovo.map((livro, idx) => (
         <TouchableOpacity key={idx} onPress={() => selecionarLivro(livro)}>
           <Text style={styles.bookItem}>{livro.name}</Text>
         </TouchableOpacity>
       ))}
+
 
       {/* Cabeçalho */}
       {livroSelecionado && !capituloSelecionado && (
@@ -211,10 +234,28 @@ export default function Biblia() {
         </View>
       )}
 
-      {/* Texto */}
+      {/* Versículos */}
       {loading && <ActivityIndicator size="large" color="#000" />}
-      {textoBiblia !== '' && !loading && (
-        <Text style={styles.bibleText}>{textoBiblia}</Text>
+      {!loading && versiculos.length > 0 && (
+        <View style={styles.bibleTextContainer}>
+          {versiculos.map(v => {
+            const key = getVerseKey(v.number);
+            const marcado = versiculosMarcados.includes(key);
+            return (
+              <TouchableOpacity
+                key={key} // chave única e estável
+                style={[
+                  styles.verseContainer,
+                  marcado && styles.verseMarked
+                ]}
+                onPress={() => toggleMarcacao(v.number)}
+              >
+                <Text style={styles.verseNumber}>{v.number}</Text>
+                <Text style={styles.verseText}>{v.text}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       )}
     </ScrollView>
   );

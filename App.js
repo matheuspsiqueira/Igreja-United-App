@@ -1,16 +1,14 @@
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// Importando telas
 import Home from './pages/Home';
 import Informacoes from './pages/Informacoes';
 import Series from './pages/Series';
-import Biblia from './pages/Biblia'
+import Biblia from './pages/Biblia';
 
-// Stacks para cada aba
 const HomeStack = createStackNavigator();
 function HomeStackScreen() {
   return (
@@ -47,14 +45,18 @@ function SeriesStackScreen() {
   );
 }
 
-// Bottom Tabs
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={DarkTheme}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
+          // ⚠️ Não esconder o header aqui, para o título aparecer
+          headerStyle: { backgroundColor: '#121212' },
+          headerTitleStyle: { color: '#FFFFFF' },
+          headerTintColor: '#FFFFFF',
+
           tabBarIcon: ({ color, size }) => {
             let iconName;
             if (route.name === 'Início') iconName = 'home';
@@ -63,8 +65,9 @@ export default function App() {
             else if (route.name === 'Séries') iconName = 'play-circle';
             return <Ionicons name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: '#0066cc',
-          tabBarInactiveTintColor: 'gray',
+          tabBarActiveTintColor: '#A1DEA6',
+          tabBarInactiveTintColor: '#9e9e9e',
+          tabBarStyle: { backgroundColor: '#121212', borderTopColor: '#222' },
         })}
       >
         <Tab.Screen name="Início" component={HomeStackScreen} />

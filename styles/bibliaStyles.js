@@ -3,20 +3,23 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#121212', // fundo escuro
     paddingTop: 20,
   },
   scroll: {
     padding: 15,
+    backgroundColor: '#121212',
   },
   versaoPicker: {
     height: 50,
     width: 140,
     alignSelf: 'flex-start',
     marginBottom: 15,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fff',
     borderRadius: 8,
     elevation: 3,
+    color: '#000000',
+    fontWeight: '700',
   },
   folderButton: {
     flexDirection: 'row',
@@ -26,28 +29,34 @@ export default StyleSheet.create({
     marginVertical: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
-  folderText: {
+  folderTextAntigo: {
     fontSize: 18,
     fontWeight: '700',
     marginLeft: 10,
-    color: '#333',
+    color: '#fff', // branco
+  },
+  folderTextNovo: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginLeft: 10,
+    color: '#fff', // preto
   },
   folderAntigo: {
-    backgroundColor: '#A0522D', // marrom/terra
+    backgroundColor: '#c15123',
   },
   folderNovo: {
-    backgroundColor: '#1E90FF', // azul
+    backgroundColor: '#c15123',
   },
   bookItem: {
     fontSize: 16,
     paddingVertical: 10,
     paddingLeft: 25,
-    color: '#1E88E5',
+    color: '#fff',
     borderBottomWidth: 0.5,
-    borderBottomColor: '#CCC',
+    borderBottomColor: '#333',
   },
   chapterContainer: {
     flexDirection: 'row',
@@ -57,17 +66,17 @@ export default StyleSheet.create({
   chapterButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#2C2C2C',
     borderRadius: 6,
     margin: 4,
     elevation: 2,
   },
   chapterButtonSelected: {
-    backgroundColor: '#1E90FF',
+    backgroundColor: '#c15123',
   },
   chapterText: {
     fontSize: 14,
-    color: '#333',
+    color: '#fff',
     fontWeight: '500',
   },
   chapterTextSelected: {
@@ -77,20 +86,51 @@ export default StyleSheet.create({
     fontSize: 16,
     marginTop: 15,
     lineHeight: 26,
-    color: '#212121',
-    backgroundColor: '#fff',
+    color: '#fff',
+    backgroundColor: '#1E1E1E',
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 8,
-    fontFamily: 'serif', // fonte serifada
+    fontFamily: 'serif',
   },
   selectedTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: '#fff',
     marginVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E90FF',
+    borderBottomColor: '#c15123',
     paddingBottom: 5,
+  },
+  bibleTextContainer: {
+    marginTop: 15,
+    backgroundColor: '#1E1E1E',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  verseContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingVertical: 6,
+    paddingHorizontal: 4,
+    borderRadius: 6,
+  },
+  verseMarked: {
+    backgroundColor: '#ce774a',
+    color: '#000000',
+  },
+  verseNumber: {
+    fontWeight: 'bold',
+    marginRight: 6,
+    color: '#c15123',
+  },
+  verseText: {
+    flex: 1,
+    fontSize: 18,
+    lineHeight: 24,
+    color: '#fff',
+    fontFamily: 'serif',
   },
 });
