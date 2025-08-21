@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212', // fundo escuro
+    backgroundColor: '#121212', 
     paddingTop: 20,
   },
   scroll: {
@@ -12,14 +12,15 @@ export default StyleSheet.create({
   },
   versaoPicker: {
     height: 50,
-    width: 140,
+    width: 160,
     alignSelf: 'flex-start',
     marginBottom: 15,
-    backgroundColor: '#fff',
+    backgroundColor: '#303030ff', 
     borderRadius: 8,
     elevation: 3,
-    color: '#000000',
-    fontWeight: '700',
+    color: '#ffffff', 
+    fontWeight: '700', 
+    paddingHorizontal: 8,
   },
   folderButton: {
     flexDirection: 'row',

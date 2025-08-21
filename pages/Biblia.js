@@ -120,6 +120,12 @@ export default function Biblia() {
     if (data?.verses && Array.isArray(data.verses)) {
       setVersiculos(data.verses);
       setCapituloSelecionado(cap);
+
+      // rola até os versículos depois de renderizar
+      setTimeout(() => {
+        scrollRef.current?.scrollTo({ y: 200, animated: true });
+      }, 300);
+
     } else {
       setVersiculos([{ number: 0, text: 'Erro ao carregar capítulo.' }]);
       setCapituloSelecionado(cap);
