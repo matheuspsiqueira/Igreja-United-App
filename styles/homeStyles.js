@@ -11,7 +11,7 @@ export const homeStyles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)', // deixa o conteúdo legível sobre o vídeo
+    backgroundColor: 'rgba(0,0,0,0.4)',
     padding: 20,
   },
   iconGrid: {
@@ -21,51 +21,61 @@ export const homeStyles = StyleSheet.create({
     marginVertical: 20,
   },
   iconCard: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#a1dea642',
+    width: 90,
+    height: 90,
+    backgroundColor: '#a1dea61f',
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
-    elevation: 5,
+    elevation: 0,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 4,
   },
   cardText: {
     marginTop: 10,
-    fontSize: 14,
+    fontSize: 12,
     color: '#fff',
     fontWeight: '600',
     textAlign: 'center',
   },
   sectionContent: {
     marginTop: 20,
-    padding: 15,
+    marginBottom: 30, // reduzi um pouco para não criar buraco grande
+    paddingHorizontal: 15,
+    paddingVertical: 10, // padding menor para se adaptar melhor ao conteúdo
     borderRadius: 15,
-    backgroundColor: '#a1dea642',
+    backgroundColor: 'rgba(161, 222, 166, 0.25)', // deixei em rgba para consistência
+    overflow: 'hidden', // importante para cortar conteúdo durante animação
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#fff',
+    textAlign: 'left',
+    padding: 10,
   },
   textItem: {
-    fontSize: 16,
-    marginVertical: 5,
+    fontSize: 15,
+    marginVertical: 4,
     color: '#ecf0f1',
+    padding: 10,
+    lineHeight: 20, // melhora legibilidade
   },
   videoContainer: {
     width: '100%',
-    height: '100%',
-    borderRadius: 15,
+    height: 180,           
+    borderRadius: 20,      
     overflow: 'hidden',
-    backgroundColor: '#000',
+    marginTop: 10,         
+    marginBottom: 20, 
+    padding: 4,      
   },
   innerVideo: {
     width: '100%',
     height: '100%',
+    borderRadius: 25,
   },
 });

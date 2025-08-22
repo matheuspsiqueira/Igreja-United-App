@@ -8,7 +8,9 @@ import Home from './pages/Home';
 import Informacoes from './pages/Informacoes';
 import Series from './pages/Series';
 import Biblia from './pages/Biblia';
+import LoadingScreen from './pages/LoadingScreen';
 
+// === Stacks internos ===
 const HomeStack = createStackNavigator();
 function HomeStackScreen() {
   return (
@@ -45,36 +47,46 @@ function SeriesStackScreen() {
   );
 }
 
+// === Tabs ===
 const Tab = createBottomTabNavigator();
+function MainTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerStyle: { backgroundColor: '#121212' },
+        headerTitleStyle: { color: '#FFFFFF' },
+        headerTintColor: '#FFFFFF',
+        tabBarIcon: ({ color, size }) => {
+          let iconName;
+          if (route.name === 'Início') iconName = 'home';
+          else if (route.name === 'Informações') iconName = 'information-circle';
+          else if (route.name === 'Bíblia') iconName = 'book';
+          else if (route.name === 'Séries') iconName = 'play-circle';
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#A1DEA6',
+        tabBarInactiveTintColor: '#9e9e9e',
+        tabBarStyle: { backgroundColor: '#121212', borderTopColor: '#222' },
+      })}
+    >
+      <Tab.Screen name="Início" component={HomeStackScreen} />
+      <Tab.Screen name="Informações" component={InfoStackScreen} />
+      <Tab.Screen name="Bíblia" component={BibliaStackScreen} />
+      <Tab.Screen name="Séries" component={SeriesStackScreen} />
+    </Tab.Navigator>
+  );
+}
+
+// === Stack raiz ===
+const RootStack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer theme={DarkTheme}>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          // ⚠️ Não esconder o header aqui, para o título aparecer
-          headerStyle: { backgroundColor: '#121212' },
-          headerTitleStyle: { color: '#FFFFFF' },
-          headerTintColor: '#FFFFFF',
-
-          tabBarIcon: ({ color, size }) => {
-            let iconName;
-            if (route.name === 'Início') iconName = 'home';
-            else if (route.name === 'Informações') iconName = 'information-circle';
-            else if (route.name === 'Bíblia') iconName = 'book';
-            else if (route.name === 'Séries') iconName = 'play-circle';
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: '#A1DEA6',
-          tabBarInactiveTintColor: '#9e9e9e',
-          tabBarStyle: { backgroundColor: '#121212', borderTopColor: '#222' },
-        })}
-      >
-        <Tab.Screen name="Início" component={HomeStackScreen} />
-        <Tab.Screen name="Informações" component={InfoStackScreen} />
-        <Tab.Screen name="Bíblia" component={BibliaStackScreen} />
-        <Tab.Screen name="Séries" component={SeriesStackScreen} />
-      </Tab.Navigator>
+      <RootStack.Navigator screenOptions={{ headerShown: false }}>
+        <RootStack.Screen name="Loading" component={LoadingScreen} />
+        <RootStack.Screen name="MainTabs" component={MainTabs} />
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 }

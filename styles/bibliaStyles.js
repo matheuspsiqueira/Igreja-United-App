@@ -46,10 +46,10 @@ export default StyleSheet.create({
     color: '#fff', // preto
   },
   folderAntigo: {
-    backgroundColor: '#c15123',
+    backgroundColor: '#a1dea663',
   },
   folderNovo: {
-    backgroundColor: '#c15123',
+    backgroundColor: '#a1dea663',
   },
   bookItem: {
     fontSize: 16,
@@ -73,7 +73,7 @@ export default StyleSheet.create({
     elevation: 2,
   },
   chapterButtonSelected: {
-    backgroundColor: '#c15123',
+    backgroundColor: '#a1dea663',
   },
   chapterText: {
     fontSize: 14,
@@ -101,7 +101,7 @@ export default StyleSheet.create({
     color: '#fff',
     marginVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#c15123',
+    borderBottomColor: '#a1dea6ff',
     paddingBottom: 5,
   },
   bibleTextContainer: {
@@ -125,7 +125,7 @@ export default StyleSheet.create({
   verseNumber: {
     fontWeight: 'bold',
     marginRight: 6,
-    color: '#c15123',
+    color: '#a1dea6ff',
   },
   verseText: {
     flex: 1,
