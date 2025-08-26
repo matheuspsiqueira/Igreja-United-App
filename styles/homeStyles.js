@@ -52,7 +52,6 @@ export const homeStyles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
     color: '#fff',
     textAlign: 'left',
     padding: 10,

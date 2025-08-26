@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Animated,
   Platform,
   UIManager,
+  ActivityIndicator,
 } from 'react-native';
 import { Video } from 'expo-av';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
@@ -21,6 +22,11 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 export default function Home() {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedSection, setSelectedSection] = useState(null);
+
+  // Estados para eventos
+  const [eventos, setEventos] = useState([]);
+  const [loadingEventos, setLoadingEventos] = useState(false);
+  const [errorEventos, setErrorEventos] = useState(null);
 
   // Animations independentes
   const newsAnim = useRef(new Animated.Value(0)).current;
@@ -38,20 +44,42 @@ export default function Home() {
     "Sexta (22/08) teremos a 2ª Edição da Campanha do Agasalho",
   ];
 
-  const eventos = [
-    { title: "Culto", day: "Domingo" },
-    { title: "MidWeek", day: "Quinta-feira" },
-  ];
+  // --- Buscar eventos da API ---
+  const fetchEventos = async () => {
+    try {
+      setLoadingEventos(true);
+      setErrorEventos(null);
+
+      // 👉 Ajuste o IP se for testar no celular físico
+      const response = await fetch("https://ed686c42d89e.ngrok-free.app/api/eventos/");
+      if (!response.ok) throw new Error("Erro ao buscar eventos");
+
+      const data = await response.json();
+      setEventos(data);
+    } catch (error) {
+      console.error("Erro eventos:", error);
+      setErrorEventos("Não foi possível carregar os eventos.");
+    } finally {
+      setLoadingEventos(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEventos();
+  }, []);
+  
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => {
+
+    // Recarrega os eventos da API
+    fetchEventos().finally(() => {
       setSelectedSection(null);
       setRefreshing(false);
       newsAnim.setValue(0);
       avisosAnim.setValue(0);
       eventosAnim.setValue(0);
-    }, 1500);
+    });
   }, []);
 
   const toggleSection = (section) => {
@@ -122,26 +150,48 @@ export default function Home() {
   };
 
   const renderEventosSection = () => {
-    if (!selectedSection || selectedSection !== 'eventos') return null;
+  if (!selectedSection || selectedSection !== 'eventos') return null;
 
-    const height = eventosAnim.interpolate({ inputRange: [0, 1], outputRange: [0, eventosHeight] });
+  const height = eventosAnim.interpolate({ inputRange: [0, 1], outputRange: [0, eventosHeight] });
 
-    return (
-      <Animated.View style={[homeStyles.sectionContent, { height, overflow: 'hidden' }]}>
-        <View
-          style={{ position: 'absolute', left: 0, right: 0 }}
-          onLayout={(e) => setEventosHeight(e.nativeEvent.layout.height)}
-        >
-          <Text style={homeStyles.sectionTitle}>📅 Eventos da Semana</Text>
-          {eventos.map((evento, index) => (
-            <Text key={index} style={homeStyles.textItem}>
-              • {evento.day}: {evento.title}
+  // Agrupar eventos por data
+  const eventosPorData = eventos.reduce((acc, evento) => {
+    if (!acc[evento.data]) acc[evento.data] = [];
+    acc[evento.data].push(evento);
+    return acc;
+  }, {});
+
+  return (
+    <Animated.View style={[homeStyles.sectionContent, { height, overflow: 'hidden' }]}>
+      <View
+        style={{ position: 'absolute', left: 0, right: 0 }}
+        onLayout={(e) => setEventosHeight(e.nativeEvent.layout.height)}
+      >
+        <Text style={homeStyles.sectionTitle}>📅 Eventos da Semana</Text>
+
+        {loadingEventos && <ActivityIndicator size="small" color="#000" />}
+        {errorEventos && <Text style={homeStyles.textItem}>{errorEventos}</Text>}
+
+        {!loadingEventos && !errorEventos && eventos.length === 0 && (
+          <Text style={homeStyles.textItem}>Nenhum evento disponível.</Text>
+        )}
+
+        {!loadingEventos && !errorEventos && Object.entries(eventosPorData).map(([data, eventosDoDia]) => (
+          <View key={data} style={{ marginBottom: 10 }}>
+            <Text style={homeStyles.sectionTitle}>
+              {data.split('-')[2]}/{data.split('-')[1]}
             </Text>
-          ))}
-        </View>
-      </Animated.View>
-    );
-  };
+            {eventosDoDia.map((evento) => (
+              <Text key={evento.id} style={homeStyles.textItem}>
+                • {evento.titulo} ⏰ {evento.horario.substring(0, 5)}
+              </Text>
+            ))}
+          </View>
+        ))}
+      </View>
+    </Animated.View>
+  );
+};
 
   return (
     <View style={{ flex: 1 }}>
