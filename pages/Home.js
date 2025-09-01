@@ -8,10 +8,12 @@ import {
   ActivityIndicator,
   Dimensions,
   RefreshControl,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { Video } from 'expo-av';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { homeStyles } from '../styles/homeStyles';
+import { useFocusEffect } from '@react-navigation/native'; // 👈 importar aqui
 
 const { height } = Dimensions.get("window");
 
@@ -54,12 +56,12 @@ export default function Home() {
     fetchEventos();
   }, []);
 
-  // Função para refresh total
+  // Função para refresh total (recarrega tudo)
   const onRefresh = async () => {
     try {
       setRefreshing(true);
-      await fetchEventos(); // chama a API de eventos
-      // aqui você pode adicionar outras funções de recarga, tipo fetchAvisos() se fosse API
+      setSelectedSection(null); // 🔄 fecha popup ao atualizar
+      await fetchEventos();     // 🔄 recarrega API
     } finally {
       setRefreshing(false);
     }
@@ -81,6 +83,24 @@ export default function Home() {
   }, [selectedSection]);
 
   const closePopup = () => setSelectedSection(null);
+
+  // 👇 resetar tudo quando a aba perde foco
+  useFocusEffect(
+    React.useCallback(() => {
+      // ao GANHAR foco
+      setSelectedSection(null); 
+      setEventos([]);
+      setErrorEventos(null);
+      fetchEventos();
+
+      return () => {
+        // ao PERDER foco
+        setSelectedSection(null); 
+        setEventos([]);
+        setErrorEventos(null);
+      };
+    }, [])
+  );
 
   // render do conteúdo do popup
   const renderPopupContent = () => {
@@ -114,7 +134,6 @@ export default function Home() {
     }
 
     if (selectedSection === "eventos") {
-      // Agrupar eventos por data
       const eventosPorData = eventos.reduce((acc, evento) => {
         if (!acc[evento.data]) acc[evento.data] = [];
         acc[evento.data].push(evento);
@@ -134,7 +153,9 @@ export default function Home() {
           {!loadingEventos && !errorEventos &&
             Object.keys(eventosPorData).map((data) => (
               <View key={data} style={{ marginBottom: 10 }}>
-                <Text style={homeStyles.sectionTitle}> {data.split('-')[2]}/{data.split('-')[1]} </Text>
+                <Text style={homeStyles.sectionTitle}>
+                  {data.split('-')[2]}/{data.split('-')[1]}
+                </Text>
                 {eventosPorData[data].map((evento) => (
                   <Text key={evento.id} style={homeStyles.textItem}>
                     • {evento.titulo} às {evento.horario.substring(0, 5)}
@@ -190,31 +211,34 @@ export default function Home() {
         </View>
       </ScrollView>
 
-      {/* POPUP ANIMADO */}
       {selectedSection && (
-        <Animated.View
-          style={[
-            homeStyles.popupOverlay,
-            {
-              backgroundColor: fadeAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: ["rgba(0,0,0,0)", "rgba(0,0,0,0.6)"],
-              }),
-            }
-          ]}
-        >
+        <TouchableWithoutFeedback onPress={closePopup}>
           <Animated.View
             style={[
-              homeStyles.popupContent,
-              { transform: [{ translateY: slideAnim }] }
+              homeStyles.popupOverlay,
+              {
+                backgroundColor: fadeAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: ["rgba(0,0,0,0)", "rgba(0,0,0,0.6)"],
+                }),
+              }
             ]}
           >
-            <TouchableOpacity onPress={closePopup} style={homeStyles.popupCloseBtn}>
-              <Text style={homeStyles.popupCloseText}>✕</Text>
-            </TouchableOpacity>
-            {renderPopupContent()}
+            <TouchableWithoutFeedback>
+              <Animated.View
+                style={[
+                  homeStyles.popupContent,
+                  { transform: [{ translateY: slideAnim }] }
+                ]}
+              >
+                <TouchableOpacity onPress={closePopup} style={homeStyles.popupCloseBtn}>
+                  <Text style={homeStyles.popupCloseText}>✕</Text>
+                </TouchableOpacity>
+                {renderPopupContent()}
+              </Animated.View>
+            </TouchableWithoutFeedback>
           </Animated.View>
-        </Animated.View>
+        </TouchableWithoutFeedback>
       )}
     </View>
   );
