@@ -7,6 +7,7 @@ import {
   Animated,
   ActivityIndicator,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import { Video } from 'expo-av';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
@@ -31,12 +32,14 @@ export default function Home() {
   const [loadingEventos, setLoadingEventos] = useState(false);
   const [errorEventos, setErrorEventos] = useState(null);
 
+  const [refreshing, setRefreshing] = useState(false);
+
   // Buscar eventos
   const fetchEventos = async () => {
     try {
       setLoadingEventos(true);
       setErrorEventos(null);
-      const response = await fetch("https://441a830c253a.ngrok-free.app/api/eventos/");
+      const response = await fetch("https://d542eb180872.ngrok-free.app/api/eventos/");
       if (!response.ok) throw new Error("Erro ao buscar eventos");
       const data = await response.json();
       setEventos(data);
@@ -50,6 +53,17 @@ export default function Home() {
   useEffect(() => {
     fetchEventos();
   }, []);
+
+  // Função para refresh total
+  const onRefresh = async () => {
+    try {
+      setRefreshing(true);
+      await fetchEventos(); // chama a API de eventos
+      // aqui você pode adicionar outras funções de recarga, tipo fetchAvisos() se fosse API
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   // animação de entrada e saída do popup
   useEffect(() => {
@@ -100,19 +114,35 @@ export default function Home() {
     }
 
     if (selectedSection === "eventos") {
+      // Agrupar eventos por data
+      const eventosPorData = eventos.reduce((acc, evento) => {
+        if (!acc[evento.data]) acc[evento.data] = [];
+        acc[evento.data].push(evento);
+        return acc;
+      }, {});
+
       return (
         <>
           <Text style={homeStyles.sectionTitle}>📅 Eventos da Semana</Text>
+
           {loadingEventos && <ActivityIndicator size="small" color="#000" />}
           {errorEventos && <Text style={homeStyles.textItem}>{errorEventos}</Text>}
           {!loadingEventos && !errorEventos && eventos.length === 0 && (
             <Text style={homeStyles.textItem}>Nenhum evento disponível.</Text>
           )}
-          {!loadingEventos && !errorEventos && eventos.map((evento) => (
-            <Text key={evento.id} style={homeStyles.textItem}>
-              • {evento.titulo} ({evento.data}) ⏰ {evento.horario.substring(0, 5)}
-            </Text>
-          ))}
+
+          {!loadingEventos && !errorEventos &&
+            Object.keys(eventosPorData).map((data) => (
+              <View key={data} style={{ marginBottom: 10 }}>
+                <Text style={homeStyles.sectionTitle}> {data.split('-')[2]}/{data.split('-')[1]} </Text>
+                {eventosPorData[data].map((evento) => (
+                  <Text key={evento.id} style={homeStyles.textItem}>
+                    • {evento.titulo} às {evento.horario.substring(0, 5)}
+                  </Text>
+                ))}
+              </View>
+            ))
+          }
         </>
       );
     }
@@ -131,7 +161,12 @@ export default function Home() {
         resizeMode="cover"
       />
 
-      <ScrollView style={homeStyles.overlay}>
+      <ScrollView
+        style={homeStyles.overlay}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#a1dea6"]} />
+        }
+      >
         <View style={homeStyles.iconGrid}>
           <TouchableOpacity style={homeStyles.iconCard} onPress={() => setSelectedSection("news")}>
             <FontAwesome5 name="newspaper" size={35} color="#fff" />

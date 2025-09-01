@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, RefreshControl, Alert } from 'react-native';
+import { useScrollToTop } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,6 +24,7 @@ export default function Biblia() {
   const [versiculosMarcados, setVersiculosMarcados] = useState([]);
 
   const scrollRef = useRef();
+  useScrollToTop(scrollRef);
 
   // helper para gerar chave única por versículo
   const getVerseKey = (versoNum) => {
