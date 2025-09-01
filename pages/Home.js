@@ -110,7 +110,7 @@ export default function Home() {
           <Text style={homeStyles.sectionTitle}>🎥 United News</Text>
           <View style={homeStyles.videoContainer}>
             <Video
-              source={require("../assets/united-news.mp4")}
+              source={require("../assets/videos/united-news.mp4")}
               style={homeStyles.innerVideo}
               shouldPlay
               isLooping
@@ -174,7 +174,7 @@ export default function Home() {
   return (
     <View style={{ flex: 1 }}>
       <Video
-        source={require('../assets/video-home.mp4')}
+        source={require('../assets/videos/video-home.mp4')}
         style={homeStyles.backgroundVideo}
         shouldPlay
         isLooping

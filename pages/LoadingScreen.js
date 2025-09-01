@@ -9,7 +9,7 @@ export default function LoadingScreen({ navigation }) {
     <View style={styles.container}>
       <Video
         ref={video}
-        source={require("../assets/loading.mp4")}
+        source={require("../assets/videos/loading.mp4")}
         style={styles.video}
         resizeMode="contain"
         shouldPlay
