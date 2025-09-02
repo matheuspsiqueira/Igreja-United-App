@@ -1,8 +1,9 @@
 // VideoScreen.js
 import React, { useRef, useState } from 'react';
-import { View, Dimensions } from 'react-native';
+import { View, Dimensions, TouchableOpacity } from 'react-native';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function Video({ route, navigation }) {
   const { videoId } = route.params;
@@ -32,6 +33,21 @@ export default function Video({ route, navigation }) {
         height: isFullScreen ? width : height,
       }}
     >
+      {/* Botão de voltar */}
+      {!isFullScreen && (
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: 40,
+            left: 20,
+            zIndex: 10,
+          }}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="arrow-back" size={30} color="#fff" />
+        </TouchableOpacity>
+      )}
+
       <YoutubePlayer
         ref={videoRef}
         height={isFullScreen ? width : 230}
