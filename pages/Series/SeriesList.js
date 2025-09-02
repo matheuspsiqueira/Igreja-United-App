@@ -1,38 +1,48 @@
-// SeriesListScreen.js
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
+// SeriesList.js
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { styles } from '../../styles/seriesStyles';
 
-const series = [
-  {
-    id: '1',
-    titulo: 'A Mesa',
-    imagemCapa: require('../../assets/img/card.jpeg'),
-    episodios: [
-      { id: '1', titulo: 'Ep. 1', youtubeId: 'NoHCyyIhqHc' },
-      { id: '2', titulo: 'Ep. 2', youtubeId: 'NoHCyyIhqHc' },
-      { id: '3', titulo: 'Ep. 3', youtubeId: 'NoHCyyIhqHc' },
-      { id: '4', titulo: 'Ep. 4', youtubeId: 'NoHCyyIhqHc' },
-    ],
-  },
-];
-
 export default function SeriesList({ navigation }) {
+  const [series, setSeries] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('https://0797850d892d.ngrok-free.app/api/series/') // Android emulador -> 10.0.2.2, em device real -> IP da máquina
+      .then(response => response.json())
+      .then(data => {
+        setSeries(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error(error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#fff" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Séries</Text>
       <FlatList
         data={series}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.listContainer}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
-              navigation.navigate('Episodios', { serie: item, serieTitulo: item.titulo })
+              navigation.navigate('Episodios', { serieId: item.id, serieTitulo: item.titulo })
             }
           >
-            <Image source={item.imagemCapa} style={styles.capa} />
+            <Image source={{ uri: item.capa }} style={styles.capa} />
             <Text style={styles.titulo}>{item.titulo}</Text>
           </TouchableOpacity>
         )}
