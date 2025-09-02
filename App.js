@@ -6,7 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Home from './pages/Home';
 import Informacoes from './pages/Informacoes';
-import Series from './pages/Series';
+import SeriesStack from './pages/Series/SeriesStack';
 import Biblia from './pages/Biblia';
 import LoadingScreen from './pages/LoadingScreen';
 
@@ -38,15 +38,6 @@ function BibliaStackScreen() {
   );
 }
 
-const SeriesStack = createStackNavigator();
-function SeriesStackScreen() {
-  return (
-    <SeriesStack.Navigator screenOptions={{ headerShown: false }}>
-      <SeriesStack.Screen name="Séries" component={Series} />
-    </SeriesStack.Navigator>
-  );
-}
-
 // === Tabs ===
 const Tab = createBottomTabNavigator();
 function MainTabs() {
@@ -72,7 +63,7 @@ function MainTabs() {
       <Tab.Screen name="Início" component={HomeStackScreen} />
       <Tab.Screen name="Informações" component={InfoStackScreen} />
       <Tab.Screen name="Bíblia" component={BibliaStackScreen} />
-      <Tab.Screen name="Séries" component={SeriesStackScreen} />
+      <Tab.Screen name="Séries" component={SeriesStack} />
     </Tab.Navigator>
   );
 }
