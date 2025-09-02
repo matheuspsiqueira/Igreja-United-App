@@ -1,24 +1,36 @@
-// SeriesList.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image, ActivityIndicator, RefreshControl } from 'react-native';
 import { styles } from '../../styles/seriesStyles';
 
 export default function SeriesList({ navigation }) {
   const [series, setSeries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    fetch('https://0797850d892d.ngrok-free.app/api/series/') // Android emulador -> 10.0.2.2, em device real -> IP da máquina
+  const fetchSeries = () => {
+    setLoading(true);
+    fetch('https://0797850d892d.ngrok-free.app/api/series/')
       .then(response => response.json())
       .then(data => {
         setSeries(data);
         setLoading(false);
+        setRefreshing(false);
       })
       .catch(error => {
         console.error(error);
         setLoading(false);
+        setRefreshing(false);
       });
+  };
+
+  useEffect(() => {
+    fetchSeries();
   }, []);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchSeries();
+  };
 
   if (loading) {
     return (
@@ -30,11 +42,13 @@ export default function SeriesList({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Séries</Text>
       <FlatList
         data={series}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.listContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#fff" />
+        }
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}

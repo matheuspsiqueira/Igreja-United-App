@@ -19,7 +19,7 @@ export default function SeriesStack() {
       <Stack.Screen
         name="SeriesList"
         component={SeriesList}
-        options={{ title: 'Séries' }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Episodios"

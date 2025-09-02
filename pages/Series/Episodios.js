@@ -1,6 +1,5 @@
-// Episodios.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { styles } from '../../styles/seriesStyles';
 import { getYoutubeId } from '../../utils/youtube';
 
@@ -8,19 +7,33 @@ export default function Episodios({ route, navigation }) {
   const { serieId } = route.params;
   const [episodios, setEpisodios] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
+  const fetchEpisodios = () => {
+    setLoading(true);
     fetch(`https://0797850d892d.ngrok-free.app/api/episodios/?serie=${serieId}`)
       .then(response => response.json())
       .then(data => {
-        setEpisodios(data);
+        const sorted = data.sort((a, b) => a.numero - b.numero);
+        setEpisodios(sorted);
         setLoading(false);
+        setRefreshing(false);
       })
       .catch(error => {
         console.error(error);
         setLoading(false);
+        setRefreshing(false);
       });
+  };
+
+  useEffect(() => {
+    fetchEpisodios();
   }, [serieId]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchEpisodios();
+  };
 
   if (loading) {
     return (
@@ -36,15 +49,16 @@ export default function Episodios({ route, navigation }) {
         data={episodios}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.listContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#fff" />
+        }
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.episodioCard}
-            onPress={() =>
-                navigation.navigate('Video', { videoId: getYoutubeId(item.link_video) })
-            }
-            >
-                <Text style={styles.episodioTitulo}>Ep. {item.numero} - {item.titulo}</Text>
-            </TouchableOpacity>
+            onPress={() => navigation.navigate('Video', { videoId: getYoutubeId(item.link_video) })}
+          >
+            <Text style={styles.episodioTitulo}>Ep. {item.numero} - {item.titulo}</Text>
+          </TouchableOpacity>
         )}
       />
     </View>
