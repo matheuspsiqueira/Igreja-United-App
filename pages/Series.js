@@ -5,26 +5,25 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  Button,
   RefreshControl,
   Dimensions,
 } from 'react-native';
-import { Video } from 'expo-av';
+import YoutubePlayer from 'react-native-youtube-iframe';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { styles } from '../styles/seriesStyles';
-import { Ionicons } from '@expo/vector-icons'; // para o ícone de seta
+import { Ionicons } from '@expo/vector-icons';
 
-// Mock de séries e episódios
+// Mock de séries e episódios com links do YouTube
 const series = [
   {
     id: '1',
     titulo: 'A Mesa',
     imagemCapa: require('../assets/img/card.jpeg'),
     episodios: [
-      { id: '1', titulo: 'Ep. 1', arquivo: require('../assets/videos/loading.mp4') },
-      { id: '2', titulo: 'Ep. 2', arquivo: require('../assets/videos/loading.mp4') },
-      { id: '3', titulo: 'Ep. 3', arquivo: require('../assets/videos/loading.mp4') },
-      { id: '4', titulo: 'Ep. 4', arquivo: require('../assets/videos/loading.mp4') },
+        { id: '1', titulo: 'Ep. 1', youtubeId: 'NoHCyyIhqHc' },
+        { id: '2', titulo: 'Ep. 2', youtubeId: 'NoHCyyIhqHc' },
+        { id: '3', titulo: 'Ep. 3', youtubeId: 'NoHCyyIhqHc' },
+        { id: '4', titulo: 'Ep. 4', youtubeId: 'NoHCyyIhqHc' },
     ],
   },
 ];
@@ -41,19 +40,6 @@ export default function Series() {
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => setRefreshing(false), 1000);
-  };
-
-  // Evento chamado quando o usuário entra ou sai do full screen
-  const handleFullscreenUpdate = async ({ fullscreenUpdate }) => {
-    if (fullscreenUpdate === Video.FULLSCREEN_UPDATE_PLAYER_DID_PRESENT) {
-      // Entrou em full screen
-      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-      setIsFullScreen(true);
-    } else if (fullscreenUpdate === Video.FULLSCREEN_UPDATE_PLAYER_DID_DISMISS) {
-      // Saiu do full screen
-      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-      setIsFullScreen(false);
-    }
   };
 
   const renderSeries = () => (
@@ -92,7 +78,7 @@ export default function Series() {
           <TouchableOpacity
             style={styles.episodioCard}
             onPress={() => {
-              setVideoSelecionado(item.arquivo);
+              setVideoSelecionado(item.youtubeId);
               setTela('video');
             }}
           >
@@ -106,14 +92,29 @@ export default function Series() {
   const renderVideo = () => {
   const { width, height } = Dimensions.get('window');
 
+  const onFullScreenChange = async (isFullScreen) => {
+    if (isFullScreen) {
+      // Força landscape
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+      setIsFullScreen(true);
+    } else {
+      // Volta para portrait
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+      setIsFullScreen(false);
+    }
+  };
+
   return (
     <View
-      style={[
-        styles.videoContainer,
-        { width: isFullScreen ? height : width, height: isFullScreen ? width : height },
-      ]}
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#000',
+        width: isFullScreen ? height : width,
+        height: isFullScreen ? width : height,
+      }}
     >
-      {/* Botão de voltar sobreposto ao vídeo */}
       <TouchableOpacity
         onPress={() => setTela('episodios')}
         style={{
@@ -129,14 +130,13 @@ export default function Series() {
         <Ionicons name="arrow-back" size={28} color="#fff" />
       </TouchableOpacity>
 
-      <Video
+      <YoutubePlayer
         ref={videoRef}
-        source={videoSelecionado}
-        style={{ width: '100%', height: '100%' }}
-        useNativeControls
-        resizeMode="contain"
-        shouldPlay
-        onFullscreenUpdate={handleFullscreenUpdate}
+        height={isFullScreen ? width : 230}
+        width={isFullScreen ? height : '100%'}
+        play={true}
+        videoId={videoSelecionado}
+        onFullScreenChange={onFullScreenChange} // ⚡ Aqui
       />
     </View>
   );
