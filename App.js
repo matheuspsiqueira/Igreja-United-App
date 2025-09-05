@@ -3,6 +3,8 @@ import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as NavigationBar from "expo-navigation-bar";
+import { StatusBar } from "expo-status-bar";
 
 import Home from './pages/Home/Home';
 import SeriesStack from './pages/Series/SeriesStack';
@@ -85,8 +87,15 @@ function MainTabs() {
 const RootStack = createStackNavigator();
 
 export default function App() {
+  //  Esconde botões do Android
+  React.useEffect(() => {
+    NavigationBar.setVisibilityAsync("hidden");
+    NavigationBar.setBehaviorAsync("overlay-swipe");
+  }, []);
+
   return (
     <NavigationContainer theme={DarkTheme}>
+      <StatusBar hidden />
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         <RootStack.Screen name="Loading" component={LoadingScreen} />
         <RootStack.Screen name="MainTabs" component={MainTabs} />
