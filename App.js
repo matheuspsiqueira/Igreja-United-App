@@ -4,8 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import Home from './pages/Home';
-import Informacoes from './pages/Informacoes';
+import Home from './pages/Home/Home';
 import SeriesStack from './pages/Series/SeriesStack';
 import Biblia from './pages/Biblia';
 import LoadingScreen from './pages/LoadingScreen';
@@ -60,8 +59,22 @@ function MainTabs() {
         tabBarStyle: { backgroundColor: '#121212', borderTopColor: '#222' },
       })}
     >
-      <Tab.Screen name="Início" component={HomeStackScreen} />
-      <Tab.Screen name="Informações" component={InfoStackScreen} />
+      <Tab.Screen 
+        name="Início" 
+        component={HomeStackScreen}
+        options={{
+          headerTitle: 'Igreja United', // 🔹 remove o "Início"
+          headerRight: () => (
+            <Ionicons
+              name="person-circle-outline"
+              size={30}
+              color="#fff"
+              style={{ marginRight: 15 }}
+              onPress={() => alert("Ir para perfil")} // 👉 depois você coloca navigation.navigate("Perfil")
+            />
+          ),
+        }}
+      />
       <Tab.Screen name="Bíblia" component={BibliaStackScreen} />
       <Tab.Screen name="Séries" component={SeriesStack} />
     </Tab.Navigator>
