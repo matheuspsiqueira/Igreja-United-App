@@ -1,15 +1,29 @@
 import * as React from 'react';
-import { NavigationContainer, DarkTheme } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as NavigationBar from "expo-navigation-bar";
 import { StatusBar } from "expo-status-bar";
+import { AppState } from "react-native";
 
 import Home from './pages/Home/Home';
 import SeriesStack from './pages/Series/SeriesStack';
 import Biblia from './pages/Biblia';
 import LoadingScreen from './pages/LoadingScreen';
+import Login from "./pages/Usuarios/Login";
+import Cadastro from "./pages/Usuarios/Cadastro";
+
+// === Stack de Usuário ===
+const UsuarioStack = createStackNavigator();
+function UsuarioStackScreen() {
+  return (
+    <UsuarioStack.Navigator screenOptions={{ headerShown: true }}>
+      <UsuarioStack.Screen name="Login" component={Login} />
+      <UsuarioStack.Screen name="Cadastro" component={Cadastro} />
+    </UsuarioStack.Navigator>
+  );
+}
 
 // === Stacks internos ===
 const HomeStack = createStackNavigator();
@@ -21,21 +35,26 @@ function HomeStackScreen() {
   );
 }
 
-const InfoStack = createStackNavigator();
-function InfoStackScreen() {
-  return (
-    <InfoStack.Navigator screenOptions={{ headerShown: false }}>
-      <InfoStack.Screen name="Informações" component={Informacoes} />
-    </InfoStack.Navigator>
-  );
-}
-
 const BibliaStack = createStackNavigator();
 function BibliaStackScreen() {
   return (
     <BibliaStack.Navigator screenOptions={{ headerShown: false }}>
       <BibliaStack.Screen name="Bíblia" component={Biblia} />
     </BibliaStack.Navigator>
+  );
+}
+
+// === Botão de perfil no header ===
+function UserIconButton() {
+  const navigation = useNavigation();
+  return (
+    <Ionicons
+      name="person-circle-outline"
+      size={30}
+      color="#fff"
+      style={{ marginRight: 15 }}
+      onPress={() => navigation.navigate("Usuario")}
+    />
   );
 }
 
@@ -65,16 +84,8 @@ function MainTabs() {
         name="Início" 
         component={HomeStackScreen}
         options={{
-          headerTitle: 'Igreja United', // 🔹 remove o "Início"
-          headerRight: () => (
-            <Ionicons
-              name="person-circle-outline"
-              size={30}
-              color="#fff"
-              style={{ marginRight: 15 }}
-              onPress={() => alert("Ir para perfil")} // 👉 depois você coloca navigation.navigate("Perfil")
-            />
-          ),
+          headerTitle: 'Igreja United',
+          headerRight: () => <UserIconButton />,
         }}
       />
       <Tab.Screen name="Bíblia" component={BibliaStackScreen} />
@@ -87,18 +98,38 @@ function MainTabs() {
 const RootStack = createStackNavigator();
 
 export default function App() {
-  //  Esconde botões do Android
+  // 🔹 Função que força o modo imersivo
+  const enableImmersive = async () => {
+    try {
+      await NavigationBar.setVisibilityAsync("hidden");
+      await NavigationBar.setBehaviorAsync("overlay-swipe");
+    } catch (e) {
+      console.warn("Erro ao ativar modo imersivo:", e);
+    }
+  };
+
   React.useEffect(() => {
-    NavigationBar.setVisibilityAsync("hidden");
-    NavigationBar.setBehaviorAsync("overlay-swipe");
+    enableImmersive();
+
+    // 🔹 Reaplica sempre que o app volta para foreground
+    const sub = AppState.addEventListener("change", (state) => {
+      if (state === "active") enableImmersive();
+    });
+
+    return () => sub.remove();
   }, []);
 
   return (
-    <NavigationContainer theme={DarkTheme}>
+    <NavigationContainer
+      theme={DarkTheme}
+      onReady={enableImmersive} // 🔹 garante na inicialização
+      onStateChange={enableImmersive} // 🔹 reaplica ao navegar
+    >
       <StatusBar hidden />
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         <RootStack.Screen name="Loading" component={LoadingScreen} />
         <RootStack.Screen name="MainTabs" component={MainTabs} />
+        <RootStack.Screen name="Usuario" component={UsuarioStackScreen} />
       </RootStack.Navigator>
     </NavigationContainer>
   );
