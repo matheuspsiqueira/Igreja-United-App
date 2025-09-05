@@ -9,12 +9,12 @@ export default function Cadastro({ navigation }) {
 
   const handleCadastro = async () => {
     try {
-      const response = await fetch("http://SEU_BACKEND_DJANGO/api/cadastro/", {
+      const response = await fetch("https://95d1dbcda3b7.ngrok-free.app/api/cadastro/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: nome, email, password: senha }),
+        body: JSON.stringify({ username: nome, email, password: senha }),
       });
 
       if (response.ok) {

@@ -8,17 +8,17 @@ export default function Login({ navigation }) {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://SEU_BACKEND_DJANGO/api/login/", {
+      const response = await fetch("https://95d1dbcda3b7.ngrok-free.app/api/login/", { // se usar emulador Android
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password: senha }),
+        body: JSON.stringify({ username: email, password: senha }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        // 👉 Aqui você pode salvar o token em AsyncStorage
+        await AsyncStorage.setItem("token", data.token); // salva token
         Alert.alert("Sucesso", "Login realizado!");
         navigation.navigate("Início");
       } else {
