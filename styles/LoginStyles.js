@@ -1,41 +1,50 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
+const { width } = Dimensions.get("window");
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    padding: 20,
     backgroundColor: "#121212",
   },
+  scrollContainer: {
+    flexGrow: 1,
+    padding: 20,
+  },
+  formContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
   title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
+    fontSize: 32,
     color: "#fff",
+    marginBottom: 40,
+    fontWeight: "bold",
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#333",
+    width: "100%",
     backgroundColor: "#1e1e1e",
     color: "#fff",
-    padding: 12,
-    borderRadius: 8,
+    padding: 15,
+    borderRadius: 10,
     marginBottom: 15,
   },
   button: {
+    width: "100%",
     backgroundColor: "#a1dea663",
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: "center",
+    marginTop: 10,
   },
   buttonText: {
     color: "#fff",
+    fontSize: 16,
     fontWeight: "bold",
   },
   link: {
-    marginTop: 15,
-    textAlign: "center",
     color: "#fff",
+    marginTop: 20,
+    fontSize: 14,
   },
 });
