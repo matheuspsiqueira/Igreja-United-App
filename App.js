@@ -13,6 +13,7 @@ import Biblia from './pages/Biblia';
 import LoadingScreen from './pages/LoadingScreen';
 import Login from "./pages/Usuarios/Login";
 import Cadastro from "./pages/Usuarios/Cadastro";
+import Perfil from './pages/Usuarios/Perfil';
 
 // === Stack de Usuário ===
 const UsuarioStack = createStackNavigator();
@@ -21,6 +22,7 @@ function UsuarioStackScreen() {
     <UsuarioStack.Navigator screenOptions={{ headerShown: true }}>
       <UsuarioStack.Screen name="Login" component={Login} />
       <UsuarioStack.Screen name="Cadastro" component={Cadastro} />
+      <UsuarioStack.Screen name='Perfil' component={Perfil} />
     </UsuarioStack.Navigator>
   );
 }

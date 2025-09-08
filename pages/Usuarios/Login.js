@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Alert,
   RefreshControl,
   KeyboardAvoidingView,
   Platform
@@ -27,7 +26,6 @@ export default function Login({ navigation }) {
 
   const handleLogin = async () => {
     if (!email || !senha) {
-      Alert.alert("Erro", "Preencha todos os campos");
       return;
     }
 
@@ -46,14 +44,10 @@ export default function Login({ navigation }) {
       if (response.ok && data.token) {
         // Salva token no AsyncStorage
         await AsyncStorage.setItem("token", data.token);
-        Alert.alert("Sucesso", "Login realizado!");
-        navigation.replace("Home");
-      } else {
-        // Mostra mensagem de erro do backend
-        Alert.alert("Erro", data.detail || data.error || "Usuário ou senha inválidos");
+        navigation.replace("Perfil");
       }
     } catch (error) {
-      Alert.alert("Erro", "Não foi possível conectar ao servidor");
+      return;
     }
   };
 
