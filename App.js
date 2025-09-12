@@ -2,7 +2,7 @@ import * as React from 'react';
 import { NavigationContainer, DarkTheme, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import * as NavigationBar from "expo-navigation-bar";
 import { StatusBar } from "expo-status-bar";
 import { AppState } from "react-native";
@@ -72,7 +72,6 @@ function MainTabs() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
           if (route.name === 'Início') iconName = 'home';
-          else if (route.name === 'Informações') iconName = 'information-circle';
           else if (route.name === 'Bíblia') iconName = 'book';
           else if (route.name === 'Séries') iconName = 'play-circle';
           return <Ionicons name={iconName} size={size} color={color} />;

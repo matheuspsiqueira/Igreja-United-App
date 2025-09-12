@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import { View, Dimensions, TouchableOpacity } from 'react-native';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Video({ route, navigation }) {
   const { videoId } = route.params;

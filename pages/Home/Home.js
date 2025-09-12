@@ -63,7 +63,7 @@ export default function Home({ navigation }) {
       setLoadingEventos(true);
       setErrorEventos(null);
       const response = await fetch(
-        "https://1d9a08383829.ngrok-free.app/api/eventos/"
+        "https://8a8eb06cf82e.ngrok-free.app/api/eventos/"
       );
       if (!response.ok) throw new Error("Erro ao buscar eventos");
       const data = await response.json();

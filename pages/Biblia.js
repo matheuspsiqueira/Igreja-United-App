@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, RefreshControl, Alert, useFocusEffect } from 'react-native';
 import { useScrollToTop } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/bibliaStyles';
 
@@ -181,7 +181,7 @@ export default function Biblia() {
         style={[styles.folderButton, styles.folderAntigo]}
         onPress={() => setAntigoAberto(!antigoAberto)}
       >
-        <Icon name={antigoAberto ? 'folder-open' : 'folder'} size={22} color="#fff" />
+        <Ionicons name={antigoAberto ? 'folder-open' : 'folder'} size={22} color="#fff" />
         <Text style={styles.folderTextAntigo}>Antigo Testamento</Text>
       </TouchableOpacity>
       {antigoAberto && livrosAntigo.map((livro, idx) => (
@@ -195,7 +195,7 @@ export default function Biblia() {
         style={[styles.folderButton, styles.folderNovo]}
         onPress={() => setNovoAberto(!novoAberto)}
       >
-        <Icon name={novoAberto ? 'folder-open' : 'folder'} size={22} color="#fff" />
+        <Ionicons name={novoAberto ? 'folder-open' : 'folder'} size={22} color="#fff" />
         <Text style={styles.folderTextNovo}>Novo Testamento</Text>
       </TouchableOpacity>
       {novoAberto && livrosNovo.map((livro, idx) => (
