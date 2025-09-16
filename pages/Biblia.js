@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, RefreshCon
 import { useScrollToTop } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
+import { Modal } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/bibliaStyles';
 
@@ -20,8 +21,36 @@ export default function Biblia() {
   const [novoAberto, setNovoAberto] = useState(false);
   const [token, setToken] = useState(null);
 
-  // agora armazena chaves (strings) no formato versao:livro:cap:verso
-  const [versiculosMarcados, setVersiculosMarcados] = useState([]);
+  // CORES DE MARCAÇÃO
+  const [versiculosMarcados, setVersiculosMarcados] = useState({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [versoSelecionado, setVersoSelecionado] = useState(null);
+  const coresDisponiveis = ["#ce774a", "#f7dc6f", "#82e0aa", "#85c1e9", "#bb8fce"];
+
+  function abrirModalMarcacao(versoNum) {
+    setVersoSelecionado(versoNum);
+    setModalVisible(true);
+  }
+
+  function escolherCor(cor) {
+    if (versoSelecionado == null) return;
+    const key = getVerseKey(versoSelecionado);
+    setVersiculosMarcados(prev => ({ ...prev, [key]: cor }));
+    setModalVisible(false);
+  }
+
+  function removerMarcacao() {
+    if (versoSelecionado == null) return;
+    const key = getVerseKey(versoSelecionado);
+    setVersiculosMarcados(prev => {
+      const novo = { ...prev };
+      delete novo[key];
+      return novo;
+    });
+    setModalVisible(false);
+  }
+
+
 
   const scrollRef = useRef();
   useScrollToTop(scrollRef);
@@ -246,25 +275,62 @@ export default function Biblia() {
       {loading && <ActivityIndicator size="large" color="#000" />}
       {!loading && versiculos.length > 0 && (
         <View style={styles.bibleTextContainer}>
-          {versiculos.map(v => {
-            const key = getVerseKey(v.number);
-            const marcado = versiculosMarcados.includes(key);
-            return (
-              <TouchableOpacity
-                key={key} // chave única e estável
-                style={[
-                  styles.verseContainer,
-                  marcado && styles.verseMarked
-                ]}
-                onPress={() => toggleMarcacao(v.number)}
-              >
-                <Text style={styles.verseNumber}>{v.number}</Text>
-                <Text style={styles.verseText}>{v.text}</Text>
-              </TouchableOpacity>
-            );
-          })}
+          <Text style={styles.verseParagraph}>
+            {versiculos.map(v => {
+              const key = getVerseKey(v.number);
+              const cor = versiculosMarcados[key];
+
+              return (
+                <Text
+                  key={key}
+                  onPress={() => abrirModalMarcacao(v.number)}
+                >
+                  <Text style={styles.verseNumber}>{v.number} </Text>
+                  <Text
+                    style={[
+                      styles.verseText,
+                      cor ? { backgroundColor: cor, color: '#000' } : null
+                    ]}
+                  >
+                    {v.text + ' '}
+                  </Text>
+                </Text>
+              );
+            })}
+          </Text>
         </View>
       )}
+
+      <Modal
+        transparent
+        visible={modalVisible}
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Escolha uma cor</Text>
+            <View style={styles.coresContainer}>
+              {coresDisponiveis.map((cor, idx) => (
+                <TouchableOpacity
+                  key={idx}
+                  style={[styles.corOpcao, { backgroundColor: cor }]}
+                  onPress={() => escolherCor(cor)}
+                />
+              ))}
+            </View>
+
+            <TouchableOpacity style={styles.btnRemover} onPress={removerMarcacao}>
+              <Text style={styles.btnRemoverText}>Remover marcação</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.btnCancelar} onPress={() => setModalVisible(false)}>
+              <Text style={styles.btnCancelarText}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
     </ScrollView>
   );
 }
