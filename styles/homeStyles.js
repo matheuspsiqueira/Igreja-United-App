@@ -67,16 +67,17 @@ export const homeStyles = StyleSheet.create({
   },
   videoContainer: {
     width: '100%',
-    height: 180,
     borderRadius: 20,
     overflow: 'hidden',
     marginTop: 10,
     marginBottom: 20,
     padding: 4,
+    justifyContent: 'center',
   },
+
   innerVideo: {
     width: '100%',
-    height: '100%',
+    aspectRatio: 16 / 9,
     borderRadius: 25,
   },
 
@@ -92,7 +93,7 @@ export const homeStyles = StyleSheet.create({
   },
   popupContent: {
     width: "85%",
-    maxHeight: "70%",
+    maxHeight: "90%",
     backgroundColor: "rgba(161, 222, 166, 0.25)",
     borderRadius: 20,
     padding: 15,
