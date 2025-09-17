@@ -36,6 +36,21 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     color: "#333",
   },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "#3498db",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  avatarLetter: {
+    color: "#fff",
+    fontSize: 36,
+    fontWeight: "bold",
+  },
+
 });
 
 export default styles;

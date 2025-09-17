@@ -11,8 +11,19 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../../styles/LoginStyles";
+import useAuth from "./useAuth";
+import { useEffect } from "react";
 
 export default function Login({ navigation }) {
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      // Se já estiver logado, vai direto para Perfil
+      navigation.replace("Perfil");
+    }
+  }, [user, loading]);
+
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [refreshing, setRefreshing] = useState(false);
@@ -25,13 +36,11 @@ export default function Login({ navigation }) {
   }, []);
 
   const handleLogin = async () => {
-    if (!email || !senha) {
-      return;
-    }
+    if (!email || !senha) return;
 
     try {
       const response = await fetch(
-        "https://8a8eb06cf82e.ngrok-free.app/api/login/",
+        "https://ba49f7e370e1.ngrok-free.app/api/login/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -42,14 +51,22 @@ export default function Login({ navigation }) {
       const data = await response.json();
 
       if (response.ok && data.token) {
-        // Salva token no AsyncStorage
         await AsyncStorage.setItem("token", data.token);
+
+        // Salva o user de forma segura
+        const userData = data.user ? data.user : { name: "Usuário", email };
+        await AsyncStorage.setItem("user", JSON.stringify(userData));
+
         navigation.replace("Perfil");
+      } else {
+        alert("E-mail ou senha incorretos!");
       }
     } catch (error) {
-      return;
+      console.log(error);
+      alert("Erro ao fazer login.");
     }
   };
+
 
   return (
     <KeyboardAvoidingView

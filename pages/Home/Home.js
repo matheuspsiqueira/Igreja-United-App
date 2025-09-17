@@ -12,7 +12,7 @@ import {
 import { Video } from "expo-av";
 import { FontAwesome5, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
-
+import useAuth from "../Usuarios/useAuth";
 import { homeStyles } from "../../styles/homeStyles";
 
 // Import das seções
@@ -39,18 +39,20 @@ export default function Home({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
 
   // Botão de usuário no header
+  const { user } = useAuth();
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
           style={homeStyles.userButton}
-          onPress={() => navigation.navigate("Perfil")}
+          onPress={() => navigation.navigate(user ? "Perfil" : "Login")}
         >
           <Ionicons name="person-circle-outline" size={30} color="#fff" />
         </TouchableOpacity>
       ),
     });
-  }, [navigation]);
+  }, [navigation, user]);
 
   // Refresh total (zera popup ao puxar pra baixo)
   const onRefresh = async () => {
