@@ -10,10 +10,10 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { Video } from "expo-av";
-import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons"; // 👤 ícone do usuário
-import { homeStyles } from "../../styles/homeStyles";
+import { FontAwesome5, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
+
+import { homeStyles } from "../../styles/homeStyles";
 
 // Import das seções
 import NewsSection from "./sections/NewsSection";
@@ -21,29 +21,24 @@ import AvisosSection from "./sections/AvisosSection";
 import EventosSection from "./sections/EventosSection";
 import ContatosSection from "./sections/ContatosSection";
 import InfoSection from "./sections/InfoSection";
+import UGroupSection from "./sections/uGroupSection";
+import SobreSection from "./sections/SobreSection";
+import LocaisSection from "./sections/LocaisSection";
+import CompartilharSection from "./sections/CompartilharSection";
+
 
 const { height } = Dimensions.get("window");
 
 export default function Home({ navigation }) {
   const [selectedSection, setSelectedSection] = useState(null);
 
-  // animação do popup
+  // Animação do popup
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(height)).current;
 
-  const avisos = [
-    "Domingo (24/08), teremos somente o culto da manhã às 10h",
-    "Dia 24/08 teremos feijoada",
-    "Sexta (22/08) teremos a 2ª Edição da Campanha do Agasalho",
-  ];
-
-  const [eventos, setEventos] = useState([]);
-  const [loadingEventos, setLoadingEventos] = useState(false);
-  const [errorEventos, setErrorEventos] = useState(null);
-
   const [refreshing, setRefreshing] = useState(false);
 
-  // 👉 Botão de usuário no header
+  // Botão de usuário no header
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -57,40 +52,14 @@ export default function Home({ navigation }) {
     });
   }, [navigation]);
 
-  // Buscar eventos
-  const fetchEventos = async () => {
-    try {
-      setLoadingEventos(true);
-      setErrorEventos(null);
-      const response = await fetch(
-        "https://ba49f7e370e1.ngrok-free.app/api/eventos/"
-      );
-      if (!response.ok) throw new Error("Erro ao buscar eventos");
-      const data = await response.json();
-      setEventos(data);
-    } catch (error) {
-      setErrorEventos("Não foi possível carregar os eventos.");
-    } finally {
-      setLoadingEventos(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchEventos();
-  }, []);
-
-  // Função para refresh total
+  // Refresh total (zera popup ao puxar pra baixo)
   const onRefresh = async () => {
-    try {
-      setRefreshing(true);
-      setSelectedSection(null);
-      await fetchEventos();
-    } finally {
-      setRefreshing(false);
-    }
+    setRefreshing(true);
+    setSelectedSection(null);
+    setRefreshing(false);
   };
 
-  // animação do popup
+  // Animação do popup
   useEffect(() => {
     if (selectedSection) {
       Animated.parallel([
@@ -122,36 +91,25 @@ export default function Home({ navigation }) {
 
   const closePopup = () => setSelectedSection(null);
 
-  // resetar ao perder foco
+  // Resetar ao perder foco
   useFocusEffect(
     React.useCallback(() => {
       setSelectedSection(null);
-      setEventos([]);
-      setErrorEventos(null);
-      fetchEventos();
-
-      return () => {
-        setSelectedSection(null);
-        setEventos([]);
-        setErrorEventos(null);
-      };
+      return () => setSelectedSection(null);
     }, [])
   );
 
-  // renderizar conteúdo do popup
+  // Renderizar conteúdo do popup
   const renderPopupContent = () => {
     if (selectedSection === "news") return <NewsSection />;
-    if (selectedSection === "avisos") return <AvisosSection avisos={avisos} />;
-    if (selectedSection === "eventos")
-      return (
-        <EventosSection
-          eventos={eventos}
-          loading={loadingEventos}
-          error={errorEventos}
-        />
-      );
+    if (selectedSection === "avisos") return <AvisosSection />;
+    if (selectedSection === "eventos") return <EventosSection />;
     if (selectedSection === "contatos") return <ContatosSection />;
-    if (selectedSection === "Informações") return <InfoSection />;
+    if (selectedSection === "informações") return <InfoSection />;
+    if (selectedSection === "ugroup") return <UGroupSection />;
+    if (selectedSection === "sobre") return <SobreSection />;
+    if (selectedSection === "locais") return <LocaisSection />;
+    if (selectedSection === "compartilhar") return <CompartilharSection />;
     return null;
   };
 
@@ -168,6 +126,7 @@ export default function Home({ navigation }) {
 
       <ScrollView
         style={homeStyles.overlay}
+        scrollEnabled={!selectedSection}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -177,87 +136,141 @@ export default function Home({ navigation }) {
         }
       >
         <View style={homeStyles.iconGrid}>
-
-          <TouchableOpacity style={homeStyles.iconCard} onPress={() => setSelectedSection("sobre")}>
+          <TouchableOpacity
+            style={homeStyles.iconCard}
+            onPress={() => setSelectedSection("sobre")}
+          >
             <MaterialIcons name="church" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>Sobre Nós</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={homeStyles.iconCard} onPress={() => setSelectedSection("news")}>
+          <TouchableOpacity
+            style={homeStyles.iconCard}
+            onPress={() => setSelectedSection("news")}
+          >
             <FontAwesome5 name="newspaper" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>United News</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={homeStyles.iconCard} onPress={() => setSelectedSection("ugroup")}>
+          <TouchableOpacity
+            style={homeStyles.iconCard}
+            onPress={() => setSelectedSection("ugroup")}
+          >
             <MaterialIcons name="group" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>uGroup</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={homeStyles.iconCard} onPress={() => setSelectedSection("avisos")}>
+          <TouchableOpacity
+            style={homeStyles.iconCard}
+            onPress={() => setSelectedSection("avisos")}
+          >
             <MaterialIcons name="announcement" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>Avisos</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={homeStyles.iconCard} onPress={() => setSelectedSection("eventos")}>
+          <TouchableOpacity
+            style={homeStyles.iconCard}
+            onPress={() => setSelectedSection("eventos")}
+          >
             <MaterialIcons name="event" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>Eventos</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={homeStyles.iconCard} onPress={() => setSelectedSection("locais")}>
+          <TouchableOpacity
+            style={homeStyles.iconCard}
+            onPress={() => setSelectedSection("locais")}
+          >
             <MaterialIcons name="location-on" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>Locais</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={homeStyles.iconCard} onPress={() => setSelectedSection("informações")}>
+          <TouchableOpacity
+            style={homeStyles.iconCard}
+            onPress={() => setSelectedSection("informações")}
+          >
             <MaterialIcons name="info-outline" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>Informações</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={homeStyles.iconCard} onPress={() => setSelectedSection("fale conosco")}>
+          <TouchableOpacity
+            style={homeStyles.iconCard}
+            onPress={() => setSelectedSection("contatos")}
+          >
             <MaterialIcons name="forum" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>Fale Conosco</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={homeStyles.iconCard} onPress={() => setSelectedSection("compartilhar")}>
+          <TouchableOpacity
+            style={homeStyles.iconCard}
+            onPress={() => setSelectedSection("compartilhar")}
+          >
             <MaterialIcons name="share" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>Compartilhar</Text>
           </TouchableOpacity>
-
         </View>
       </ScrollView>
 
       {selectedSection && (
-        <TouchableWithoutFeedback onPress={closePopup}>
+        <Animated.View
+          style={[
+            homeStyles.popupOverlay,
+            {
+              backgroundColor: fadeAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: ["rgba(0,0,0,0)", "rgba(0,0,0,0.6)"],
+              }),
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+          ]}
+        >
+          {/* Touchable para fechar ao clicar fora */}
+          <TouchableWithoutFeedback onPress={closePopup}>
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
+          </TouchableWithoutFeedback>
+
+          {/* Conteúdo do popup */}
           <Animated.View
             style={[
-              homeStyles.popupOverlay,
+              homeStyles.popupContent,
               {
-                backgroundColor: fadeAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: ["rgba(0,0,0,0)", "rgba(0,0,0,0.6)"],
-                }),
+                transform: [{ translateY: slideAnim }],
+                maxHeight: height * 0.6,
+                width: '90%',
               },
             ]}
           >
-            <TouchableWithoutFeedback>
-              <Animated.View
-                style={[
-                  homeStyles.popupContent,
-                  { transform: [{ translateY: slideAnim }] },
-                ]}
-              >
-                <TouchableOpacity
-                  onPress={closePopup}
-                  style={homeStyles.popupCloseBtn}
-                >
-                  <Text style={homeStyles.popupCloseText}>✕</Text>
-                </TouchableOpacity>
-                {renderPopupContent()}
-              </Animated.View>
-            </TouchableWithoutFeedback>
+            <TouchableOpacity
+              onPress={closePopup}
+              style={homeStyles.popupCloseBtn}
+            >
+              <Text style={homeStyles.popupCloseText}>✕</Text>
+            </TouchableOpacity>
+
+            {/* Scroll do popup */}
+            <ScrollView
+              contentContainerStyle={{ paddingBottom: 20 }}
+              nestedScrollEnabled={true}
+            >
+              {renderPopupContent()}
+            </ScrollView>
           </Animated.View>
-        </TouchableWithoutFeedback>
+        </Animated.View>
       )}
+
     </View>
   );
 }

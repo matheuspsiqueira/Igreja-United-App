@@ -7,8 +7,10 @@ export default function InfoSection() {
     <View>
       <Text style={homeStyles.sectionTitle}>ℹ️ Informações</Text>
       <Text style={homeStyles.textItem}>
-        Bem-vindo ao aplicativo da United! Aqui você acompanha avisos, eventos,
-        notícias e muito mais.
+        Todos os direitos reservados
+      </Text>
+      <Text style={homeStyles.textItem}>
+        © Copyright
       </Text>
     </View>
   );
