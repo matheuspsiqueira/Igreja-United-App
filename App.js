@@ -14,6 +14,7 @@ import LoadingScreen from './pages/LoadingScreen';
 import Login from "./pages/Usuarios/Login";
 import Cadastro from "./pages/Usuarios/Cadastro";
 import Perfil from './pages/Usuarios/Perfil';
+import Termos from './pages/Usuarios/Termos';
 
 // === Stack de Usuário ===
 const UsuarioStack = createStackNavigator();
@@ -23,6 +24,7 @@ function UsuarioStackScreen() {
       <UsuarioStack.Screen name="Login" component={Login} />
       <UsuarioStack.Screen name="Cadastro" component={Cadastro} />
       <UsuarioStack.Screen name='Perfil' component={Perfil} />
+      <UsuarioStack.Screen name='Termos' component={Termos} />
     </UsuarioStack.Navigator>
   );
 }

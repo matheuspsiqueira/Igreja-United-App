@@ -9,7 +9,7 @@ export default function SeriesList({ navigation }) {
 
   const fetchSeries = () => {
     setLoading(true);
-    fetch('https://ba49f7e370e1.ngrok-free.app/api/series/')
+    fetch('https://328aa325d573.ngrok-free.app/api/series/')
       .then(response => response.json())
       .then(data => {
         setSeries(data);

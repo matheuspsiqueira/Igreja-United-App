@@ -14,7 +14,6 @@ export default function Perfil({ navigation }) {
         const userData = await AsyncStorage.getItem("user");
         if (userData) {
           const parsed = JSON.parse(userData);
-          console.log("Usuário carregado:", parsed);
           setUser(parsed);
         }
       } catch (e) {
@@ -128,7 +127,9 @@ export default function Perfil({ navigation }) {
           <MaterialIcons name="chevron-right" size={24} style={styles.arrowIcon} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem}
+          onPress={() => navigation.navigate("Termos")}
+        >
           <View style={styles.menuItemLeft}>
             <MaterialIcons name="description" size={24} color="#fff" />
             <Text style={styles.menuText}>Termos e Condições</Text>

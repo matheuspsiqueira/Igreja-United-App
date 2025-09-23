@@ -10,6 +10,7 @@ import {
   Platform
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import CheckBox from "expo-checkbox";
 import styles from "../../styles/CadastroStyles";
 
 export default function Cadastro({ navigation }) {
@@ -20,6 +21,7 @@ export default function Cadastro({ navigation }) {
   const [username, setUsername] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmSenha, setConfirmSenha] = useState("");
+  const [aceitouTermos, setAceitouTermos] = useState(false); // <-- estado do checkbox
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(() => {
@@ -31,6 +33,7 @@ export default function Cadastro({ navigation }) {
     setUsername("");
     setSenha("");
     setConfirmSenha("");
+    setAceitouTermos(false);
     setRefreshing(false);
   }, []);
 
@@ -51,13 +54,18 @@ export default function Cadastro({ navigation }) {
   };
 
   const handleCadastro = async () => {
+    if (!aceitouTermos) {
+      Alert.alert("Aviso", "Você precisa aceitar os Termos e Condições para se cadastrar.");
+      return;
+    }
+
     if (senha !== confirmSenha) {
       Alert.alert("Erro", "As senhas não coincidem");
       return;
     }
 
     try {
-      const response = await fetch("https://1d9a08383829.ngrok-free.app/api/cadastro/", {
+      const response = await fetch("https://328aa325d573.ngrok-free.app/api/cadastro/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -77,7 +85,6 @@ export default function Cadastro({ navigation }) {
         Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
         navigation.replace("Login");
       } else {
-        // Exibe mensagens detalhadas de validação do serializer
         if (data && typeof data === "object") {
           const mensagens = Object.values(data).flat().join("\n");
           Alert.alert("Erro", mensagens);
@@ -116,6 +123,21 @@ export default function Cadastro({ navigation }) {
           <TextInput style={styles.input} placeholder="Nome de usuário" placeholderTextColor="#aaa" value={username} onChangeText={setUsername} />
           <TextInput style={styles.input} placeholder="Senha" placeholderTextColor="#aaa" secureTextEntry value={senha} onChangeText={setSenha} />
           <TextInput style={styles.input} placeholder="Confirme a senha" placeholderTextColor="#aaa" secureTextEntry value={confirmSenha} onChangeText={setConfirmSenha} />
+
+          {/* Checkbox de aceitação dos termos */}
+          <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}>
+            <CheckBox
+              value={aceitouTermos}
+              onValueChange={setAceitouTermos}
+              tintColors={{ true: "#A1DEA6", false: "#aaa" }}
+            />
+            <Text style={{ color: "#fff", marginLeft: 8 }}>
+              Li e aceito os{" "}
+              <Text style={{ color: "#A1DEA6" }} onPress={() => navigation.navigate("Termos")}>
+                Termos e Condições
+              </Text>
+            </Text>
+          </View>
 
           <TouchableOpacity style={styles.button} onPress={handleCadastro}>
             <Text style={styles.buttonText}>Cadastrar</Text>

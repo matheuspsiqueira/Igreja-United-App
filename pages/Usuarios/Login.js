@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../../styles/LoginStyles";
 import useAuth from "./useAuth";
-import { useEffect } from "react";
 
 export default function Login({ navigation }) {
   const { user, loading } = useAuth();
@@ -40,7 +39,7 @@ export default function Login({ navigation }) {
 
     try {
       const response = await fetch(
-        "https://ba49f7e370e1.ngrok-free.app/api/login/",
+        "https://328aa325d573.ngrok-free.app/api/login/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -51,10 +50,15 @@ export default function Login({ navigation }) {
       const data = await response.json();
 
       if (response.ok && data.token) {
+        // Salva o token
         await AsyncStorage.setItem("token", data.token);
 
-        // Salva o user de forma segura
-        const userData = data.user ? data.user : { name: "Usuário", email };
+        // Salva o usuário corretamente, pegando o username da API
+        const userData = {
+          username: data.username,
+          email: data.email,
+          profile: data.profile
+        };
         await AsyncStorage.setItem("user", JSON.stringify(userData));
 
         navigation.replace("Perfil");
@@ -66,7 +70,6 @@ export default function Login({ navigation }) {
       alert("Erro ao fazer login.");
     }
   };
-
 
   return (
     <KeyboardAvoidingView
