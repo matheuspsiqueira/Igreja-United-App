@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Alert, Switch } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Alert, Switch, Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from "expo-image-picker";
 import styles from "../../styles/perfilStyles";
 
 export default function Perfil({ navigation }) {
@@ -42,19 +43,46 @@ export default function Perfil({ navigation }) {
     );
   };
 
+  const pickImage = async () => {
+    // Solicitar permissão
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert("Permissão necessária", "Você precisa permitir acesso à galeria.");
+      return;
+    }
+
+    // Abrir galeria
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+      allowsEditing: true,
+      aspect: [1, 1], // quadrado
+    });
+
+    if (!result.canceled) {
+      const newUser = { ...user, avatar: result.assets[0].uri };
+      setUser(newUser);
+      await AsyncStorage.setItem("user", JSON.stringify(newUser));
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
         <View style={styles.avatarContainer}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarLetter}>
-              {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
-            </Text>
-          </View>
-          <View style={styles.editIcon}>
+          {user?.avatar ? (
+            <Image source={{ uri: user.avatar }} style={styles.avatarImage} />
+          ) : (
+            <View style={styles.avatar}>
+              <Text style={styles.avatarLetter}>
+                {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
+              </Text>
+            </View>
+          )}
+          <TouchableOpacity style={styles.editIcon} onPress={pickImage}>
             <MaterialIcons name="edit" size={16} color="#fff" />
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.usernameEmail}>
@@ -127,7 +155,8 @@ export default function Perfil({ navigation }) {
           <MaterialIcons name="chevron-right" size={24} style={styles.arrowIcon} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}
+        <TouchableOpacity
+          style={styles.menuItem}
           onPress={() => navigation.navigate("Termos")}
         >
           <View style={styles.menuItemLeft}>
@@ -145,7 +174,10 @@ export default function Perfil({ navigation }) {
           <MaterialIcons name="chevron-right" size={24} style={styles.arrowIcon} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.menuItem, styles.logoutItem]} onPress={handleLogout}>
+        <TouchableOpacity
+          style={[styles.menuItem, styles.logoutItem]}
+          onPress={handleLogout}
+        >
           <View style={styles.menuItemLeft}>
             <MaterialIcons name="exit-to-app" size={24} color="#e74c3c" />
             <Text style={[styles.menuText, { color: "#e74c3c" }]}>Sair</Text>

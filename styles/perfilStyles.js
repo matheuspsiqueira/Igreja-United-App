@@ -29,6 +29,11 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
   },
+  avatarImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
   editIcon: {
     position: "absolute",
     bottom: 0,
