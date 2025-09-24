@@ -44,25 +44,56 @@ export default function Perfil({ navigation }) {
   };
 
   const pickImage = async () => {
-    // Solicitar permissão
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
       Alert.alert("Permissão necessária", "Você precisa permitir acesso à galeria.");
       return;
     }
 
-    // Abrir galeria
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
       allowsEditing: true,
-      aspect: [1, 1], // quadrado
+      aspect: [1, 1],
     });
 
     if (!result.canceled) {
-      const newUser = { ...user, avatar: result.assets[0].uri };
-      setUser(newUser);
-      await AsyncStorage.setItem("user", JSON.stringify(newUser));
+      try {
+        const userData = await AsyncStorage.getItem("user");
+        const parsedUser = JSON.parse(userData);
+        const token = parsedUser?.token;
+
+        const formData = new FormData();
+        formData.append("avatar", {
+          uri: result.assets[0].uri,
+          name: "avatar.jpg",
+          type: "image/jpeg",
+        });
+
+        const response = await fetch("https://328aa325d573.ngrok-free.app/api/upload-avatar/", {
+          method: "POST",
+          headers: {
+            "Authorization": `Token ${token}`,
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          console.log("Erro no upload:", errText);
+          Alert.alert("Erro", "Não foi possível enviar a imagem");
+          return;
+        }
+
+        const data = await response.json();
+
+        const newUser = { ...parsedUser, avatar: data.avatar };
+        setUser(newUser);
+        await AsyncStorage.setItem("user", JSON.stringify(newUser));
+
+      } catch (err) {
+        console.log("Erro upload avatar:", err);
+      }
     }
   };
 

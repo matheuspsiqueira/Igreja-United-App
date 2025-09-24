@@ -55,8 +55,10 @@ export default function Login({ navigation }) {
 
         // Salva o usuário corretamente, pegando o username da API
         const userData = {
+          token: data.token,
           username: data.username,
           email: data.email,
+          avatar: data.profile?.avatar || null,
           profile: data.profile
         };
         await AsyncStorage.setItem("user", JSON.stringify(userData));
