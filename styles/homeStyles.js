@@ -25,7 +25,7 @@ export const homeStyles = StyleSheet.create({
   iconCard: {
     width: 90,
     height: 90,
-    backgroundColor: '#a1dea61f',
+    backgroundColor: '#1f414aab',
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -48,7 +48,7 @@ export const homeStyles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 15,
-    backgroundColor: 'rgba(161, 222, 166, 0.25)',
+    backgroundColor: 'rgba(161, 222, 166, 0.57)',
     overflow: 'hidden',
   },
   sectionTitle: {
@@ -94,7 +94,7 @@ export const homeStyles = StyleSheet.create({
   popupContent: {
     width: "85%",
     maxHeight: "90%",
-    backgroundColor: "rgba(161, 222, 166, 0.25)",
+    backgroundColor: "#1f414ad3",
     borderRadius: 20,
     padding: 15,
   },

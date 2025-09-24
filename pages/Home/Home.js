@@ -20,11 +20,14 @@ import NewsSection from "./sections/NewsSection";
 import AvisosSection from "./sections/AvisosSection";
 import EventosSection from "./sections/EventosSection";
 import ContatosSection from "./sections/ContatosSection";
-import InfoSection from "./sections/InfoSection";
+import ConciergeSection from "./sections/ConciergeSection";
 import UGroupSection from "./sections/uGroupSection";
 import SobreSection from "./sections/SobreSection";
 import LocaisSection from "./sections/LocaisSection";
-import CompartilharSection from "./sections/CompartilharSection";
+import RelevanciaSection from "./sections/RelevanciaSection";
+import VoluntariosSection from "./sections/VoluntariosSection";
+import MembrosSection from "./sections/MembrosSection";
+import AgendaSection from "./sections/AgendaSection";
 
 
 const { height } = Dimensions.get("window");
@@ -107,11 +110,14 @@ export default function Home({ navigation }) {
     if (selectedSection === "avisos") return <AvisosSection />;
     if (selectedSection === "eventos") return <EventosSection />;
     if (selectedSection === "contatos") return <ContatosSection />;
-    if (selectedSection === "informações") return <InfoSection />;
+    if (selectedSection === "concierge") return <ConciergeSection />;
     if (selectedSection === "ugroup") return <UGroupSection />;
     if (selectedSection === "sobre") return <SobreSection />;
     if (selectedSection === "locais") return <LocaisSection />;
-    if (selectedSection === "compartilhar") return <CompartilharSection />;
+    if (selectedSection === "relevancia") return <RelevanciaSection />;
+    if (selectedSection === "voluntarios") return <VoluntariosSection />;
+    if (selectedSection === "membros") return <MembrosSection />;
+    if (selectedSection === "agenda") return <AgendaSection />;
     return null;
   };
 
@@ -166,7 +172,7 @@ export default function Home({ navigation }) {
             style={homeStyles.iconCard}
             onPress={() => setSelectedSection("avisos")}
           >
-            <MaterialIcons name="announcement" size={35} color="#fff" />
+            <MaterialIcons name="error-outline" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>Avisos</Text>
           </TouchableOpacity>
 
@@ -188,10 +194,26 @@ export default function Home({ navigation }) {
 
           <TouchableOpacity
             style={homeStyles.iconCard}
-            onPress={() => setSelectedSection("informações")}
+            onPress={() => setSelectedSection("agenda")}
           >
-            <MaterialIcons name="info-outline" size={35} color="#fff" />
-            <Text style={homeStyles.cardText}>Informações</Text>
+            <MaterialIcons name="calendar-month" size={35} color="#fff" />
+            <Text style={homeStyles.cardText}>Agenda</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={homeStyles.iconCard}
+            onPress={() => setSelectedSection("membros")}
+          >
+            <MaterialIcons name="badge" size={35} color="#fff" />
+            <Text style={homeStyles.cardText}>Seja membro</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={homeStyles.iconCard}
+            onPress={() => setSelectedSection("voluntarios")}
+          >
+            <MaterialIcons name="assignment-ind" size={35} color="#fff" />
+            <Text style={homeStyles.cardText}>Seja voluntário</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -204,10 +226,18 @@ export default function Home({ navigation }) {
 
           <TouchableOpacity
             style={homeStyles.iconCard}
-            onPress={() => setSelectedSection("compartilhar")}
+            onPress={() => setSelectedSection("concierge")}
           >
-            <MaterialIcons name="share" size={35} color="#fff" />
-            <Text style={homeStyles.cardText}>Compartilhar</Text>
+            <MaterialIcons name="desk" size={35} color="#fff" />
+            <Text style={homeStyles.cardText}>Concierge</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={homeStyles.iconCard}
+            onPress={() => setSelectedSection("relevancia")}
+          >
+            <MaterialIcons name="ads-click" size={35} color="#fff" />
+            <Text style={homeStyles.cardText}>Projeto relevância</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

@@ -29,6 +29,12 @@ export default StyleSheet.create({
     borderRadius: 10,
     marginBottom: 15,
   },
+  forgotPassword: {
+    color: "#fff",
+    marginBottom: 15,
+    marginTop: 5,
+    textDecorationLine: "underline"
+  },
   button: {
     width: "100%",
     backgroundColor: "#a1dea663",

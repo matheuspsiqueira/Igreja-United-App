@@ -88,7 +88,7 @@ export default function Login({ navigation }) {
         }
       >
         <View style={styles.formContainer}>
-          <Text style={styles.title}>Login</Text>
+          <Text style={styles.title}>UNTD.</Text>
 
           <TextInput
             style={styles.input}
@@ -109,13 +109,20 @@ export default function Login({ navigation }) {
             onChangeText={setSenha}
           />
 
+          <TouchableOpacity onPress={() => navigation.navigate("EsqueceuSenha")}>
+            <Text style={styles.forgotPassword}>Esqueceu sua senha?</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Entrar</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
-            <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 10 }}>
+            <Text style={styles.link}>Não tem conta? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
+              <Text style={[styles.link, { fontWeight: "bold", textDecorationLine: "underline" }]}>Cadastre-se</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAwareScrollView>
     </KeyboardAvoidingView>
