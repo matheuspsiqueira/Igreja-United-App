@@ -7,7 +7,7 @@ import styles from "../../styles/perfilStyles";
 
 export default function Perfil({ navigation }) {
   const [user, setUser] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -24,6 +24,7 @@ export default function Perfil({ navigation }) {
     loadUser();
   }, []);
 
+  //LOGOUT
   const handleLogout = async () => {
     Alert.alert(
       "Sair",
@@ -43,6 +44,7 @@ export default function Perfil({ navigation }) {
     );
   };
 
+  // IMAGEM DE PERFIL
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
