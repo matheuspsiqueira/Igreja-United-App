@@ -13,7 +13,7 @@ export default function EventosSection() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("https://8937adbb8e22.ngrok-free.app/api/eventos/");
+      const response = await fetch("https://febc45378eee.ngrok-free.app/api/eventos/");
       if (!response.ok) throw new Error("Erro ao buscar eventos");
       const data = await response.json();
       setEventos(data);

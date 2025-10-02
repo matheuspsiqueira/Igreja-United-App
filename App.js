@@ -15,6 +15,7 @@ import Login from "./pages/Usuarios/Login";
 import Cadastro from "./pages/Usuarios/Cadastro";
 import Perfil from './pages/Usuarios/Perfil';
 import Termos from './pages/Usuarios/Termos';
+import LocaisSection from './pages/Home/sections/LocaisSection';
 
 // === Stack de Usuário ===
 const UsuarioStack = createStackNavigator();
@@ -34,7 +35,18 @@ const HomeStack = createStackNavigator();
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="Home" component={Home} />
+      <HomeStack.Screen 
+        name="Home" 
+        component={Home} 
+        options={{ headerShown: false }} // Home não mostra header
+      />
+      <HomeStack.Screen 
+        name="Locais" 
+        component={LocaisSection} 
+        options={{
+          headerShown: false, // **nenhum header** só nesta tela
+        }}
+      />
     </HomeStack.Navigator>
   );
 }
@@ -133,6 +145,25 @@ export default function App() {
         <RootStack.Screen name="Loading" component={LoadingScreen} />
         <RootStack.Screen name="MainTabs" component={MainTabs} />
         <RootStack.Screen name="Usuario" component={UsuarioStackScreen} />
+        <RootStack.Screen 
+          name="Locais" 
+          component={LocaisSection} 
+          options={({ navigation }) => ({
+            headerShown: true,
+            headerTitle: "", // remove o título
+            headerStyle: { backgroundColor: "#121212" },
+            headerTintColor: "#fff",
+            headerLeft: () => (
+              <Ionicons
+                name="arrow-back"
+                size={28}
+                color="#fff"
+                style={{ marginLeft: 15 }}
+                onPress={() => navigation.goBack()}
+              />
+            ),
+          })}
+        />
       </RootStack.Navigator>
     </NavigationContainer>
   );

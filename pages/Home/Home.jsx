@@ -186,7 +186,7 @@ export default function Home({ navigation }) {
 
           <TouchableOpacity
             style={homeStyles.iconCard}
-            onPress={() => setSelectedSection("locais")}
+            onPress={() => navigation.navigate("Locais")}
           >
             <MaterialIcons name="location-on" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>Locais</Text>
