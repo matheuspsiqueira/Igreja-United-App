@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as NavigationBar from "expo-navigation-bar";
 import { StatusBar } from "expo-status-bar";
 import { AppState } from "react-native";
+import { ThemeProvider } from "./context/ThemeContext";
 
 import Home from './pages/Home/Home';
 import SeriesStack from './pages/Series/SeriesStack';
@@ -135,6 +136,7 @@ export default function App() {
   }, []);
 
   return (
+    <ThemeProvider>
     <NavigationContainer
       theme={DarkTheme}
       onReady={enableImmersive} // 🔹 garante na inicialização
@@ -166,5 +168,6 @@ export default function App() {
         />
       </RootStack.Navigator>
     </NavigationContainer>
+    </ThemeProvider>
   );
 }

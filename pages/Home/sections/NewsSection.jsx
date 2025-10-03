@@ -11,7 +11,7 @@ export default function NewsSection() {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const res = await fetch("https://febc45378eee.ngrok-free.app/api/news/latest/");
+        const res = await fetch("https://52da1c4443b8.ngrok-free.app/api/news/latest/");
         if (!res.ok) throw new Error("Erro ao buscar vídeo");
         const data = await res.json();
 
@@ -23,7 +23,7 @@ export default function NewsSection() {
         // Certifica HTTPS
         const secureUrl = data.video.startsWith("http")
           ? data.video
-          : `https://febc45378eee.ngrok-free.app${data.video}`;
+          : `https://52da1c4443b8.ngrok-free.app${data.video}`;
 
         setVideoUrl(secureUrl);
       } catch (err) {

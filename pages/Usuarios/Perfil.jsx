@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { View, Text, TouchableOpacity, ScrollView, Alert, Switch, Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { ThemeContext } from "../../context/ThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import styles from "../../styles/perfilStyles";
 
 export default function Perfil({ navigation }) {
+  const { isDarkMode, toggleTheme, theme } = useContext(ThemeContext);
   const [user, setUser] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -24,7 +25,7 @@ export default function Perfil({ navigation }) {
     loadUser();
   }, []);
 
-  //LOGOUT
+  // LOGOUT
   const handleLogout = async () => {
     Alert.alert(
       "Sair",
@@ -72,10 +73,10 @@ export default function Perfil({ navigation }) {
           type: "image/jpeg",
         });
 
-        const response = await fetch("https://febc45378eee.ngrok-free.app/api/upload-avatar/", {
+        const response = await fetch("https://52da1c4443b8.ngrok-free.app/api/upload-avatar/", {
           method: "POST",
           headers: {
-            "Authorization": `Token ${token}`,
+            Authorization: `Token ${token}`,
           },
           body: formData,
         });
@@ -92,7 +93,6 @@ export default function Perfil({ navigation }) {
         const newUser = { ...parsedUser, avatar: data.avatar };
         setUser(newUser);
         await AsyncStorage.setItem("user", JSON.stringify(newUser));
-
       } catch (err) {
         console.log("Erro upload avatar:", err);
       }
@@ -100,15 +100,15 @@ export default function Perfil({ navigation }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
       {/* HEADER */}
       <View style={styles.header}>
         <View style={styles.avatarContainer}>
           {user?.avatar ? (
             <Image source={{ uri: user.avatar }} style={styles.avatarImage} />
           ) : (
-            <View style={styles.avatar}>
-              <Text style={styles.avatarLetter}>
+            <View style={[styles.avatar, { backgroundColor: theme.secondary }]}>
+              <Text style={[styles.avatarLetter, { color: theme.text }]}>
                 {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
               </Text>
             </View>
@@ -119,98 +119,92 @@ export default function Perfil({ navigation }) {
         </View>
 
         <View style={styles.usernameEmail}>
-          <Text style={styles.username}>
+          <Text style={[styles.username, { color: theme.text }]}>
             {user?.username ? user.username : "Usuário"}
           </Text>
-          {user?.email && <Text style={styles.email}>{user.email}</Text>}
+          {user?.email && <Text style={[styles.email, { color: theme.secondary }]}>{user.email}</Text>}
         </View>
       </View>
 
       {/* CONFIGURAÇÕES GERAIS */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Configurações Gerais</Text>
+      <View style={[styles.section, { backgroundColor: theme.card }]}>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Configurações Gerais</Text>
 
         <TouchableOpacity style={styles.menuItem}>
           <View style={styles.menuItemLeft}>
-            <MaterialIcons name="person" size={24} color="#fff" />
-            <Text style={styles.menuText}>Conta</Text>
+            <MaterialIcons name="person" size={24} color={theme.text} />
+            <Text style={[styles.menuText, { color: theme.text }]}>Conta</Text>
           </View>
-          <MaterialIcons name="chevron-right" size={24} style={styles.arrowIcon} />
+          <MaterialIcons name="chevron-right" size={24} style={[styles.arrowIcon, { color: theme.secondary }]} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem}>
           <View style={styles.menuItemLeft}>
-            <MaterialIcons name="group" size={24} color="#fff" />
-            <Text style={styles.menuText}>Voluntariado</Text>
+            <MaterialIcons name="group" size={24} color={theme.text} />
+            <Text style={[styles.menuText, { color: theme.text }]}>Voluntariado</Text>
           </View>
-          <MaterialIcons name="chevron-right" size={24} style={styles.arrowIcon} />
+          <MaterialIcons name="chevron-right" size={24} style={[styles.arrowIcon, { color: theme.secondary }]} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem}>
           <View style={styles.menuItemLeft}>
-            <MaterialIcons name="bookmark" size={24} color="#fff" />
-            <Text style={styles.menuText}>Salvos</Text>
+            <MaterialIcons name="bookmark" size={24} color={theme.text} />
+            <Text style={[styles.menuText, { color: theme.text }]}>Salvos</Text>
           </View>
-          <MaterialIcons name="chevron-right" size={24} style={styles.arrowIcon} />
+          <MaterialIcons name="chevron-right" size={24} style={[styles.arrowIcon, { color: theme.secondary }]} />
         </TouchableOpacity>
 
         <View style={styles.toggleContainer}>
           <View style={styles.menuItemLeft}>
-            <MaterialIcons name="dark-mode" size={24} color="#fff" />
-            <Text style={styles.toggleText}>Modo Escuro</Text>
+            <MaterialIcons name="dark-mode" size={24} color={theme.text} />
+            <Text style={[styles.toggleText, { color: theme.text }]}>Modo Escuro</Text>
           </View>
           <Switch
             value={isDarkMode}
-            onValueChange={setIsDarkMode}
-            thumbColor={isDarkMode ? "#a1dea6ff" : "#888"}
-            trackColor={{ false: "#555", true: "#a1dea663" }}
+            onValueChange={toggleTheme}
+            thumbColor={isDarkMode ? theme.primary : theme.secondary}
+            trackColor={{ false: "#ccc", true: "#a1dea663" }}
           />
         </View>
 
         <TouchableOpacity style={styles.menuItem}>
           <View style={styles.menuItemLeft}>
-            <MaterialIcons name="language" size={24} color="#fff" />
-            <Text style={styles.menuText}>Idioma</Text>
+            <MaterialIcons name="language" size={24} color={theme.text} />
+            <Text style={[styles.menuText, { color: theme.text }]}>Idioma</Text>
           </View>
-          <MaterialIcons name="chevron-right" size={24} style={styles.arrowIcon} />
+          <MaterialIcons name="chevron-right" size={24} style={[styles.arrowIcon, { color: theme.secondary }]} />
         </TouchableOpacity>
       </View>
 
       {/* INFORMAÇÕES */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Informações</Text>
+      <View style={[styles.section, { backgroundColor: theme.card }]}>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Informações</Text>
 
         <TouchableOpacity style={styles.menuItem}>
           <View style={styles.menuItemLeft}>
-            <MaterialIcons name="info" size={24} color="#fff" />
-            <Text style={styles.menuText}>Sobre o App</Text>
+            <MaterialIcons name="info" size={24} color={theme.text} />
+            <Text style={[styles.menuText, { color: theme.text }]}>Sobre o App</Text>
           </View>
-          <MaterialIcons name="chevron-right" size={24} style={styles.arrowIcon} />
+          <MaterialIcons name="chevron-right" size={24} style={[styles.arrowIcon, { color: theme.secondary }]} />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => navigation.navigate("Termos")}
-        >
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Termos")}>
           <View style={styles.menuItemLeft}>
-            <MaterialIcons name="description" size={24} color="#fff" />
-            <Text style={styles.menuText}>Termos e Condições</Text>
+            <MaterialIcons name="description" size={24} color={theme.text} />
+            <Text style={[styles.menuText, { color: theme.text }]}>Termos e Condições</Text>
           </View>
-          <MaterialIcons name="chevron-right" size={24} style={styles.arrowIcon} />
+          <MaterialIcons name="chevron-right" size={24} style={[styles.arrowIcon, { color: theme.secondary }]} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem}>
           <View style={styles.menuItemLeft}>
-            <MaterialIcons name="share" size={24} color="#fff" />
-            <Text style={styles.menuText}>Compartilhar App</Text>
+            <MaterialIcons name="share" size={24} color={theme.text} />
+            <Text style={[styles.menuText, { color: theme.text }]}>Compartilhar App</Text>
           </View>
-          <MaterialIcons name="chevron-right" size={24} style={styles.arrowIcon} />
+          <MaterialIcons name="chevron-right" size={24} style={[styles.arrowIcon, { color: theme.secondary }]} />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.menuItem, styles.logoutItem]}
-          onPress={handleLogout}
-        >
+        <TouchableOpacity style={[styles.menuItem, styles.logoutItem]} onPress={handleLogout}>
           <View style={styles.menuItemLeft}>
             <MaterialIcons name="exit-to-app" size={24} color="#e74c3c" />
             <Text style={[styles.menuText, { color: "#e74c3c" }]}>Sair</Text>

@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#121212", // fundo escuro
   },
   header: {
     flexDirection: "row",
@@ -20,12 +19,10 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: "#6f77708f",
     justifyContent: "center",
     alignItems: "center",
   },
   avatarLetter: {
-    color: "#fff",
     fontSize: 32,
     fontWeight: "bold",
   },
@@ -48,25 +45,23 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#fff",
     marginBottom: 4,
   },
   email: {
     fontSize: 14,
-    color: "#bbb",
   },
 
   // Seções
   section: {
     marginTop: 25,
+    borderRadius: 8,
+    overflow: "hidden",
   },
   sectionTitle: {
-    backgroundColor: "#a1dea663",
     paddingVertical: 8,
     paddingHorizontal: 15,
     fontWeight: "bold",
     fontSize: 16,
-    color: "#ffffffff",
   },
 
   // Itens do menu
@@ -86,11 +81,9 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 14,
     marginLeft: 10,
-    color: "#eee",
   },
   arrowIcon: {
     marginLeft: "auto",
-    color: "#888",
   },
 
   // Toggle (modo escuro)
@@ -105,11 +98,10 @@ const styles = StyleSheet.create({
   },
   toggleText: {
     fontSize: 16,
-    color: "#eee",
     marginLeft: 10,
   },
   logoutItem: {
-    marginBottom: 50, // espaço no fim
+    marginBottom: 50,
   },
 });
 
