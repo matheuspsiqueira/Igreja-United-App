@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, RefreshControl, Alert, useFocusEffect } from 'react-native';
 import { useScrollToTop } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { Modal } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import styles from '../styles/bibliaStyles';
+import { ThemeContext } from '../context/ThemeContext';
+import getStyles from '../styles/bibliaStyles';
 
 export default function Biblia() {
   const [versao, setVersao] = useState('nvi');
@@ -20,6 +21,8 @@ export default function Biblia() {
   const [antigoAberto, setAntigoAberto] = useState(false);
   const [novoAberto, setNovoAberto] = useState(false);
   const [token, setToken] = useState(null);
+  const styles = getStyles(isDarkMode);
+  const { theme, isDarkMode } = useContext(ThemeContext);
 
   // CORES DE MARCAÇÃO
   const [versiculosMarcados, setVersiculosMarcados] = useState({});

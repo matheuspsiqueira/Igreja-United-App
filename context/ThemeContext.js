@@ -35,3 +35,5 @@ export function ThemeProvider({ children }) {
   );
 }
 
+// ✅ Hook que você importa no seu Biblia.jsx
+export const useTheme = () => useContext(ThemeContext);
