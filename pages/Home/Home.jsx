@@ -23,7 +23,7 @@ import ContatosSection from "./sections/ContatosSection";
 import ConciergeSection from "./sections/ConciergeSection";
 import UGroupSection from "./sections/uGroupSection";
 import SobreSection from "./sections/SobreSection";
-import LocaisSection from "./sections/LocaisSection";
+import Locais from "../Locais";
 import RelevanciaSection from "./sections/RelevanciaSection";
 import VoluntariosSection from "./sections/VoluntariosSection";
 import MembrosSection from "./sections/MembrosSection";
@@ -113,7 +113,7 @@ export default function Home({ navigation }) {
     if (selectedSection === "concierge") return <ConciergeSection />;
     if (selectedSection === "ugroup") return <UGroupSection />;
     if (selectedSection === "sobre") return <SobreSection />;
-    if (selectedSection === "locais") return <LocaisSection />;
+    if (selectedSection === "locais") return <Locais />;
     if (selectedSection === "relevancia") return <RelevanciaSection />;
     if (selectedSection === "voluntarios") return <VoluntariosSection />;
     if (selectedSection === "membros") return <MembrosSection />;

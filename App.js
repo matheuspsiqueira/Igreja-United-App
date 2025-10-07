@@ -16,7 +16,7 @@ import Login from "./pages/Usuarios/Login";
 import Cadastro from "./pages/Usuarios/Cadastro";
 import Perfil from './pages/Usuarios/Perfil';
 import Termos from './pages/Usuarios/Termos';
-import LocaisSection from './pages/Home/sections/LocaisSection';
+import Locais from './pages/Locais';
 
 // === Stack de Usuário ===
 const UsuarioStack = createStackNavigator();
@@ -41,13 +41,7 @@ function HomeStackScreen() {
         component={Home} 
         options={{ headerShown: false }} // Home não mostra header
       />
-      <HomeStack.Screen 
-        name="Locais" 
-        component={LocaisSection} 
-        options={{
-          headerShown: false, // **nenhum header** só nesta tela
-        }}
-      />
+      
     </HomeStack.Navigator>
   );
 }
@@ -58,6 +52,34 @@ function BibliaStackScreen() {
     <BibliaStack.Navigator screenOptions={{ headerShown: false }}>
       <BibliaStack.Screen name="Bíblia" component={Biblia} />
     </BibliaStack.Navigator>
+  );
+}
+
+const LocaisStack = createStackNavigator();
+
+function LocaisStackScreen() {
+  return (
+    <LocaisStack.Navigator>
+      <LocaisStack.Screen
+        name="Locais"
+        component={Locais}
+        options={({ navigation }) => ({
+          headerShown: true,
+          headerTitle: "",
+          headerStyle: { backgroundColor: "#121212" },
+          headerTintColor: "#fff",
+          headerLeft: () => (
+            <Ionicons
+              name="arrow-back"
+              size={28}
+              color="#fff"
+              style={{ marginLeft: 15 }}
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        })}
+      />
+    </LocaisStack.Navigator>
   );
 }
 
@@ -147,25 +169,7 @@ export default function App() {
         <RootStack.Screen name="Loading" component={LoadingScreen} />
         <RootStack.Screen name="MainTabs" component={MainTabs} />
         <RootStack.Screen name="Usuario" component={UsuarioStackScreen} />
-        <RootStack.Screen 
-          name="Locais" 
-          component={LocaisSection} 
-          options={({ navigation }) => ({
-            headerShown: true,
-            headerTitle: "", // remove o título
-            headerStyle: { backgroundColor: "#121212" },
-            headerTintColor: "#fff",
-            headerLeft: () => (
-              <Ionicons
-                name="arrow-back"
-                size={28}
-                color="#fff"
-                style={{ marginLeft: 15 }}
-                onPress={() => navigation.goBack()}
-              />
-            ),
-          })}
-        />
+        <RootStack.Screen name="Locais" component={LocaisStackScreen}/>
       </RootStack.Navigator>
     </NavigationContainer>
     </ThemeProvider>

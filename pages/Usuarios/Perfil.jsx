@@ -73,7 +73,7 @@ export default function Perfil({ navigation }) {
           type: "image/jpeg",
         });
 
-        const response = await fetch("https://52da1c4443b8.ngrok-free.app/api/upload-avatar/", {
+        const response = await fetch("https://672fc8cf577e.ngrok-free.app/api/upload-avatar/", {
           method: "POST",
           headers: {
             Authorization: `Token ${token}`,
@@ -182,7 +182,7 @@ export default function Perfil({ navigation }) {
 
         <TouchableOpacity style={styles.menuItem}>
           <View style={styles.menuItemLeft}>
-            <MaterialIcons name="info" size={24} color={theme.text} />
+            <MaterialIcons name="smartphone" size={24} color={theme.text} />
             <Text style={[styles.menuText, { color: theme.text }]}>Sobre o App</Text>
           </View>
           <MaterialIcons name="chevron-right" size={24} style={[styles.arrowIcon, { color: theme.secondary }]} />
