@@ -14,9 +14,12 @@ import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeContext } from '../context/ThemeContext';
-import styles from '../styles/bibliaStyles';
+import getStyles from '../styles/bibliaStyles';
 
 export default function Biblia() {
+  const { theme, isDarkMode } = useContext(ThemeContext); // ✅ tema acessado
+  const styles = getStyles(theme); // ✅ agora ele existe!
+
   const [versao, setVersao] = useState('nvi');
   const [livrosAntigo, setLivrosAntigo] = useState([]);
   const [livrosNovo, setLivrosNovo] = useState([]);
@@ -30,7 +33,6 @@ export default function Biblia() {
   const [novoAberto, setNovoAberto] = useState(false);
   const [token, setToken] = useState(null);
 
-  const { theme, isDarkMode } = useContext(ThemeContext);
 
   // Marcações
   const [versiculosMarcados, setVersiculosMarcados] = useState({});
@@ -217,7 +219,7 @@ export default function Biblia() {
         style={[styles.folderButton, styles.folderAntigo]}
         onPress={() => setAntigoAberto(!antigoAberto)}
       >
-        <Ionicons name={antigoAberto ? 'folder-open' : 'folder'} size={22} color="#fff" />
+        <Ionicons name={antigoAberto ? 'folder-open' : 'folder'} size={22} color="#A1DEA6" />
         <Text style={styles.folderTextAntigo}>Antigo Testamento</Text>
       </TouchableOpacity>
 
@@ -233,7 +235,7 @@ export default function Biblia() {
         style={[styles.folderButton, styles.folderNovo]}
         onPress={() => setNovoAberto(!novoAberto)}
       >
-        <Ionicons name={novoAberto ? 'folder-open' : 'folder'} size={22} color="#fff" />
+        <Ionicons name={novoAberto ? 'folder-open' : 'folder'} size={22} color="#A1DEA6" />
         <Text style={styles.folderTextNovo}>Novo Testamento</Text>
       </TouchableOpacity>
 

@@ -39,65 +39,65 @@ export default function Locais({ navigation }) {
       nome: "Tijuca", 
       imagem: require("../assets/fundo-locais.png"),
       pastor: {
-        foto: require("../assets/clientes.png"),
-        nome: "Pr. Carlos Lima",
-        descricao: "Pastor auxiliar, coordenador de jovens.",
-        horarios: ["Segundas | 19h", "Quartas | 20h"],
-        localizacao: "Av. Cesário de Melo, 5000",
-        instagram: "https://instagram.com/carloslima",
-        spotify: "https://spotify.com/carloslima"
+        foto: require("../assets/Prs.png"),
+        nome: "Prs. Igor e Thayane Burlamaqui",
+        descricao: "Estejam conosco em um de nossos cultos:",
+        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
+        localizacao: "Estrada do Tindiba 570, Taquara",
+        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
+        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
       }
     },
     { 
       nome: "Campo Grande", 
       imagem: require("../assets/fundo-locais.png"),
       pastor: {
-        foto: require("../assets/clientes.png"),
-        nome: "Pr. Carlos Lima",
-        descricao: "Pastor auxiliar, coordenador de jovens.",
-        horarios: ["Segundas | 19h", "Quartas | 20h"],
-        localizacao: "Av. Cesário de Melo, 5000",
-        instagram: "https://instagram.com/carloslima",
-        spotify: "https://spotify.com/carloslima"
+        foto: require("../assets/Prs.png"),
+        nome: "Prs. Igor e Thayane Burlamaqui",
+        descricao: "Estejam conosco em um de nossos cultos:",
+        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
+        localizacao: "Estrada do Tindiba 570, Taquara",
+        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
+        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
       }
     },
     { 
       nome: "Vila da Penha", 
       imagem: require("../assets/fundo-locais.png"),
       pastor: {
-        foto: require("../assets/clientes.png"),
-        nome: "Pr. Carlos Lima",
-        descricao: "Pastor auxiliar, coordenador de jovens.",
-        horarios: ["Segundas | 19h", "Quartas | 20h"],
-        localizacao: "Av. Cesário de Melo, 5000",
-        instagram: "https://instagram.com/carloslima",
-        spotify: "https://spotify.com/carloslima"
+        foto: require("../assets/Prs.png"),
+        nome: "Prs. Igor e Thayane Burlamaqui",
+        descricao: "Estejam conosco em um de nossos cultos:",
+        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
+        localizacao: "Estrada do Tindiba 570, Taquara",
+        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
+        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
       }
     },
     { 
       nome: "São Gonçalo", 
       imagem: require("../assets/fundo-locais.png"),
       pastor: {
-        foto: require("../assets/clientes.png"),
-        nome: "Pr. Carlos Lima",
-        descricao: "Pastor auxiliar, coordenador de jovens.",
-        horarios: ["Segundas | 19h", "Quartas | 20h"],
-        localizacao: "Av. Cesário de Melo, 5000",
-        instagram: "https://instagram.com/carloslima",
-        spotify: "https://spotify.com/carloslima"
+        foto: require("../assets/Prs.png"),
+        nome: "Prs. Igor e Thayane Burlamaqui",
+        descricao: "Estejam conosco em um de nossos cultos:",
+        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
+        localizacao: "Estrada do Tindiba 570, Taquara",
+        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
+        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
       }
     },
     { 
       nome: "Barra da Tijuca", 
       imagem: require("../assets/fundo-locais.png"),
       pastor: {
-        foto: require("../assets/clientes.png"),
-        nome: "Pr. Carlos Lima",
-        descricao: "Pastor auxiliar, coordenador de jovens.",
-        horarios: ["Segundas | 19h", "Quartas | 20h"],
-        localizacao: "Av. Cesário de Melo, 5000",
-        instagram: "https://instagram.com/carloslima",
-        spotify: "https://spotify.com/carloslima"
+        foto: require("../assets/Prs.png"),
+        nome: "Prs. Igor e Thayane Burlamaqui",
+        descricao: "Estejam conosco em um de nossos cultos:",
+        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
+        localizacao: "Estrada do Tindiba 570, Taquara",
+        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
+        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
       }
     },
   ];

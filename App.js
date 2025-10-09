@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { NavigationContainer, DarkTheme, useNavigation } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme, DefaultTheme, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import * as NavigationBar from "expo-navigation-bar";
 import { StatusBar } from "expo-status-bar";
 import { AppState } from "react-native";
-import { ThemeProvider } from "./context/ThemeContext";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
 import Home from './pages/Home/Home';
 import SeriesStack from './pages/Series/SeriesStack';
@@ -113,7 +113,7 @@ function MainTabs() {
           else if (route.name === 'Séries') iconName = 'play-circle';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#A1DEA6',
+        tabBarActiveTintColor: '#53acc5ff',
         tabBarInactiveTintColor: '#9e9e9e',
         tabBarStyle: { backgroundColor: '#121212', borderTopColor: '#222' },
       })}
@@ -135,8 +135,11 @@ function MainTabs() {
 // === Stack raiz ===
 const RootStack = createStackNavigator();
 
-export default function App() {
-  // 🔹 Função que força o modo imersivo
+// ✅ Criar um wrapper para poder usar o hook aqui
+function AppContent() {
+  const { theme, isDarkMode } = useTheme();
+
+  // 🔹 Modo imersivo
   const enableImmersive = async () => {
     try {
       await NavigationBar.setVisibilityAsync("hidden");
@@ -148,23 +151,30 @@ export default function App() {
 
   React.useEffect(() => {
     enableImmersive();
-
-    // 🔹 Reaplica sempre que o app volta para foreground
     const sub = AppState.addEventListener("change", (state) => {
       if (state === "active") enableImmersive();
     });
-
     return () => sub.remove();
   }, []);
 
+  // ✅ Tema dinâmico para NavigationContainer
+  const baseNavTheme = isDarkMode ? DarkTheme : DefaultTheme;
+
+  const navigationTheme = {
+    ...baseNavTheme,
+    colors: {
+      ...baseNavTheme.colors,
+      background: theme.background,
+      card: theme.card,
+      text: theme.text,
+      primary: theme.primary,
+      border: "transparent",
+    },
+  };
+
   return (
-    <ThemeProvider>
-    <NavigationContainer
-      theme={DarkTheme}
-      onReady={enableImmersive} // 🔹 garante na inicialização
-      onStateChange={enableImmersive} // 🔹 reaplica ao navegar
-    >
-      <StatusBar hidden />
+    <NavigationContainer theme={navigationTheme}>
+      <StatusBar style={isDarkMode ? "light" : "dark"} />
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         <RootStack.Screen name="Loading" component={LoadingScreen} />
         <RootStack.Screen name="MainTabs" component={MainTabs} />
@@ -172,6 +182,13 @@ export default function App() {
         <RootStack.Screen name="Locais" component={LocaisStackScreen}/>
       </RootStack.Navigator>
     </NavigationContainer>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
     </ThemeProvider>
   );
 }

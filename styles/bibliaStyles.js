@@ -1,5 +1,172 @@
-import { StyleSheet } from 'react-native'; 
+// styles/bibliaStyles.js
+import { StyleSheet } from "react-native";
 
-export default StyleSheet.create({
-   container: { flex: 1, backgroundColor: '#121212', paddingTop: 20, }, scroll: { padding: 15, backgroundColor: '#121212', }, versaoPicker: { height: 50, width: 160, alignSelf: 'flex-start', marginBottom: 15, backgroundColor: '#303030ff', borderRadius: 8, elevation: 3, color: '#ffffff', fontWeight: '700', paddingHorizontal: 8, }, folderButton: { flexDirection: 'row', alignItems: 'center', padding: 12, borderRadius: 10, marginVertical: 6, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.3, shadowRadius: 3, }, folderTextAntigo: { fontSize: 18, fontWeight: '700', marginLeft: 10, color: '#fff', }, folderTextNovo: { fontSize: 18, fontWeight: '700', marginLeft: 10, color: '#fff' }, folderAntigo: { backgroundColor: '#a1dea663', }, folderNovo: { backgroundColor: '#a1dea663', }, bookItem: { fontSize: 16, paddingVertical: 10, paddingLeft: 25, color: '#fff', borderBottomWidth: 0.5, borderBottomColor: '#333', }, chapterContainer: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 10, }, chapterButton: { paddingVertical: 8, paddingHorizontal: 12, backgroundColor: '#2C2C2C', borderRadius: 6, margin: 4, elevation: 2, }, chapterButtonSelected: { backgroundColor: '#a1dea663', }, chapterText: { fontSize: 14, color: '#fff', fontWeight: '500', }, chapterTextSelected: { color: '#fff', }, bibleText: { fontSize: 16, marginTop: 15, lineHeight: 26, color: '#fff', backgroundColor: '#1E1E1E', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 8, fontFamily: 'serif', }, selectedTitle: { fontSize: 20, fontWeight: 'bold', textAlign: 'center', color: '#fff', marginVertical: 10, borderBottomWidth: 1, borderBottomColor: '#a1dea6ff', paddingBottom: 5, }, bibleTextContainer: { marginTop: 15, backgroundColor: '#1E1E1E', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8, }, verseContainer: { flexDirection: 'row', flexWrap: 'wrap', paddingVertical: 6, paddingHorizontal: 4, borderRadius: 6, }, verseNumber: { fontSize: 15, fontWeight: 'bold', marginRight: 6, marginLeft: 6, color: '#ce774a', }, verseText: { flexShrink: 1, fontSize: 18, lineHeight: 24, color: '#fff', fontFamily: 'serif', paddingHorizontal: 2, }, modalOverlay: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)", }, modalContent: { backgroundColor: "#1E1E1E", padding: 20, borderRadius: 12, alignItems: "center", width: "80%", }, modalTitle: { color: "#fff", fontSize: 18, marginBottom: 15, fontWeight: "bold", }, coresContainer: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", marginBottom: 20, }, corOpcao: { width: 40, height: 40, borderRadius: 20, margin: 8, borderWidth: 2, borderColor: "#fff", }, btnRemover: { backgroundColor: "#ce774a", paddingVertical: 8, paddingHorizontal: 20, borderRadius: 8, marginBottom: 10, }, btnRemoverText: { color: "#fff", fontWeight: "bold", }, btnCancelar: { paddingVertical: 8, paddingHorizontal: 20, }, btnCancelarText: { color: "#aaa", fontWeight: "bold", }
+export default (theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.background,
+      paddingTop: 20,
+    },
+    scroll: {
+      padding: 15,
+      backgroundColor: theme.background,
+    },
+    versaoPicker: {
+      height: 50,
+      width: 160,
+      alignSelf: "flex-start",
+      marginBottom: 15,
+      backgroundColor: theme.inputBackground,
+      borderRadius: 8,
+      elevation: 3,
+      color: theme.text,
+      fontWeight: "700",
+      paddingHorizontal: 8,
+    },
+    folderButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      padding: 12,
+      borderRadius: 10,
+      marginVertical: 6,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.3,
+      shadowRadius: 3,
+    },
+    folderTextAntigo: {
+      fontSize: 18,
+      fontWeight: "700",
+      marginLeft: 10,
+      color: theme.text,
+    },
+    folderTextNovo: {
+      fontSize: 18,
+      fontWeight: "700",
+      marginLeft: 10,
+      color: theme.text,
+    },
+    folderAntigo: {
+      backgroundColor: theme.card,
+    },
+    folderNovo: {
+      backgroundColor: theme.card,
+    },
+    bookItem: {
+      fontSize: 16,
+      paddingVertical: 10,
+      paddingLeft: 25,
+      color: theme.text,
+      borderBottomWidth: 0.5,
+      borderBottomColor: theme.border,
+    },
+    chapterContainer: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      marginTop: 10,
+    },
+    chapterButton: {
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      backgroundColor: theme.inputBackground,
+      borderRadius: 6,
+      margin: 4,
+      elevation: 2,
+    },
+    chapterButtonSelected: {
+      backgroundColor: theme.primary,
+    },
+    chapterText: {
+      fontSize: 14,
+      color: theme.text,
+      fontWeight: "500",
+    },
+    chapterTextSelected: {
+      color: theme.text,
+    },
+    bibleTextContainer: {
+      marginTop: 15,
+      backgroundColor: theme.card,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+    },
+    verseNumber: {
+      fontSize: 15,
+      fontWeight: "bold",
+      marginRight: 6,
+      marginLeft: 6,
+      color: "#ce774a",
+    },
+    verseText: {
+      flexShrink: 1,
+      fontSize: 18,
+      lineHeight: 24,
+      color: theme.text,
+      fontFamily: "serif",
+      paddingHorizontal: 2,
+    },
+    selectedTitle: {
+      fontSize: 20,
+      fontWeight: "bold",
+      textAlign: "center",
+      color: theme.text,
+      marginVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.primary,
+      paddingBottom: 5,
+    },
+    modalOverlay: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "rgba(0,0,0,0.5)",
+    },
+    modalContent: {
+      backgroundColor: theme.card,
+      padding: 20,
+      borderRadius: 12,
+      alignItems: "center",
+      width: "80%",
+    },
+    modalTitle: {
+      color: theme.text,
+      fontSize: 18,
+      marginBottom: 15,
+      fontWeight: "bold",
+    },
+    coresContainer: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      marginBottom: 20,
+    },
+    corOpcao: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      margin: 8,
+      borderWidth: 2,
+      borderColor: theme.text,
+    },
+    btnRemover: {
+      backgroundColor: "#ce774a",
+      paddingVertical: 8,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+      marginBottom: 10,
+    },
+    btnRemoverText: {
+      color: "#fff",
+      fontWeight: "bold",
+    },
+    btnCancelar: {
+      paddingVertical: 8,
+      paddingHorizontal: 20,
+    },
+    btnCancelarText: {
+      color: theme.textSecondary ?? "#aaa",
+      fontWeight: "bold",
+    },
   });
