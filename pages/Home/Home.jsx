@@ -18,7 +18,7 @@ import { homeStyles } from "../../styles/homeStyles";
 // Import das seções
 import NewsSection from "./sections/NewsSection";
 import AvisosSection from "./sections/AvisosSection";
-import EventosSection from "./sections/EventosSection";
+import Eventos from "../Eventos";
 import ContatosSection from "./sections/ContatosSection";
 import ConciergeSection from "./sections/ConciergeSection";
 import UGroupSection from "./sections/uGroupSection";
@@ -108,7 +108,7 @@ export default function Home({ navigation }) {
   const renderPopupContent = () => {
     if (selectedSection === "news") return <NewsSection />;
     if (selectedSection === "avisos") return <AvisosSection />;
-    if (selectedSection === "eventos") return <EventosSection />;
+    if (selectedSection === "eventos") return <Eventos />;
     if (selectedSection === "contatos") return <ContatosSection />;
     if (selectedSection === "concierge") return <ConciergeSection />;
     if (selectedSection === "ugroup") return <UGroupSection />;
@@ -178,7 +178,7 @@ export default function Home({ navigation }) {
 
           <TouchableOpacity
             style={homeStyles.iconCard}
-            onPress={() => setSelectedSection("eventos")}
+            onPress={() => navigation.navigate("Eventos")}
           >
             <MaterialIcons name="event" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>Eventos</Text>

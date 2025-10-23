@@ -4,4 +4,7 @@ export default {
   card: "#fff",
   primary: "#4CAF50",
   secondary: "#888",
+
+  icon: "#ed4414",
+  button: "#fff",
 };

@@ -17,6 +17,7 @@ import Cadastro from "./pages/Usuarios/Cadastro";
 import Perfil from './pages/Usuarios/Perfil';
 import Termos from './pages/Usuarios/Termos';
 import Locais from './pages/Locais';
+import Eventos from './pages/Eventos';
 
 // === Stack de Usuário ===
 const UsuarioStack = createStackNavigator();
@@ -55,6 +56,7 @@ function BibliaStackScreen() {
   );
 }
 
+//LOCAIS
 const LocaisStack = createStackNavigator();
 
 function LocaisStackScreen() {
@@ -80,6 +82,36 @@ function LocaisStackScreen() {
         })}
       />
     </LocaisStack.Navigator>
+  );
+}
+
+
+// EVENTOS
+const EventosStack = createStackNavigator();
+
+function EventosStackScreen() {
+  return (
+    <EventosStack.Navigator>
+      <EventosStack.Screen
+        name="Eventos"
+        component={Eventos}
+        options={({ navigation }) => ({
+          headerShown: true,
+          headerTitle: "",
+          headerStyle: { backgroundColor: "#121212" },
+          headerTintColor: "#fff",
+          headerLeft: () => (
+            <Ionicons
+              name="arrow-back"
+              size={28}
+              color="#fff"
+              style={{ marginLeft: 15 }}
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        })}
+      />
+    </EventosStack.Navigator>
   );
 }
 
@@ -180,6 +212,7 @@ function AppContent() {
         <RootStack.Screen name="MainTabs" component={MainTabs} />
         <RootStack.Screen name="Usuario" component={UsuarioStackScreen} />
         <RootStack.Screen name="Locais" component={LocaisStackScreen}/>
+        <RootStack.Screen name="Eventos" component={EventosStackScreen}/>
       </RootStack.Navigator>
     </NavigationContainer>
   );
