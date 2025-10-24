@@ -36,6 +36,19 @@ export default function Locais({ navigation }) {
       }
     },
     { 
+      nome: "Curicica", 
+      imagem: require("../assets/fundo-locais.png"),
+      pastor: {
+        foto: require("../assets/Prs.png"),
+        nome: "Prs. Igor e Thayane Burlamaqui",
+        descricao: "Estejam conosco em um de nossos cultos:",
+        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
+        localizacao: "Estrada do Tindiba 570, Taquara",
+        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
+        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
+      }
+    },
+    { 
       nome: "Tijuca", 
       imagem: require("../assets/fundo-locais.png"),
       pastor: {

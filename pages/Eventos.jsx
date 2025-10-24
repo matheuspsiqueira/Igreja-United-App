@@ -76,7 +76,12 @@ export default function Eventos() {
       {loading && <ActivityIndicator size="large" color={theme.text} />}
       {error && <Text style={[styles.error, { color: theme.text }]}>{error}</Text>}
       {!loading && !error && eventos.length === 0 && (
-        <Text style={[styles.empty, { color: theme.text }]}>Nenhum evento disponível.</Text>
+        <View style={styles.emptyContainer}>
+          <Text style={[styles.emptyTitle, { color: theme.text }]}>Ops!</Text>
+          <Text style={[styles.emptySubtitle, { color: theme.text }]}>
+            Nenhum evento foi encontrado no momento.
+          </Text>
+        </View>
       )}
 
       {!loading &&
@@ -159,13 +164,23 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
   },
-  empty: {
+  emptyContainer: {
+    alignItems: "center",
+    marginTop: 50,
+  },
+  emptyTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 6,
+  },
+  emptySubtitle: {
+    fontSize: 18,
     textAlign: "center",
-    marginTop: 20,
+    width: 250
   },
   card: {
     overflow: "hidden",
-    marginBottom: 20,
+    marginBottom: 40,
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
