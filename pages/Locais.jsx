@@ -23,7 +23,7 @@ export default function Locais({ navigation }) {
 
   const locais = [
     { 
-      nome: "Jacarepaguá", 
+      nome: "Pechincha", 
       imagem: require("../assets/fundo-locais.png"),
       pastor: {
         foto: require("../assets/Prs.png"),
@@ -31,7 +31,7 @@ export default function Locais({ navigation }) {
         descricao: "Estejam conosco em um de nossos cultos:",
         horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
         localizacao: "Estrada do Tindiba 570, Taquara",
-        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
+        instagram: "https://www.instagram.com/igrejaunitedpechincha?igsh=MW1hMzZpazEzYzF1eg==",
         spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
       }
     },

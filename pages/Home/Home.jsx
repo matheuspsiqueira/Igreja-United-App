@@ -27,7 +27,7 @@ import Locais from "../Locais";
 import RelevanciaSection from "./sections/RelevanciaSection";
 import VoluntariosSection from "./sections/VoluntariosSection";
 import MembrosSection from "./sections/MembrosSection";
-import AgendaSection from "./sections/AgendaSection";
+import Agenda from "../Agenda";
 
 
 const { height } = Dimensions.get("window");
@@ -117,7 +117,7 @@ export default function Home({ navigation }) {
     if (selectedSection === "relevancia") return <RelevanciaSection />;
     if (selectedSection === "voluntarios") return <VoluntariosSection />;
     if (selectedSection === "membros") return <MembrosSection />;
-    if (selectedSection === "agenda") return <AgendaSection />;
+    if (selectedSection === "agenda") return <Agenda />;
     return null;
   };
 
@@ -194,7 +194,7 @@ export default function Home({ navigation }) {
 
           <TouchableOpacity
             style={homeStyles.iconCard}
-            onPress={() => setSelectedSection("agenda")}
+            onPress={() => navigation.navigate("Agenda")}
           >
             <MaterialIcons name="calendar-month" size={35} color="#fff" />
             <Text style={homeStyles.cardText}>Agenda</Text>

@@ -18,6 +18,7 @@ import Perfil from './pages/Usuarios/Perfil';
 import Termos from './pages/Usuarios/Termos';
 import Locais from './pages/Locais';
 import Eventos from './pages/Eventos';
+import Agenda from './pages/Agenda';
 
 // === Stack de Usuário ===
 const UsuarioStack = createStackNavigator();
@@ -53,6 +54,36 @@ function BibliaStackScreen() {
     <BibliaStack.Navigator screenOptions={{ headerShown: false }}>
       <BibliaStack.Screen name="Bíblia" component={Biblia} />
     </BibliaStack.Navigator>
+  );
+}
+
+
+//AGENDA
+const AgendaStack = createStackNavigator();
+
+function AgendaStackScreen() {
+  return (
+    <AgendaStack.Navigator>
+      <AgendaStack.Screen
+        name="Agenda"
+        component={Agenda}
+        options={({ navigation }) => ({
+          headerShown: true,
+          headerTitle: "",
+          headerStyle: { backgroundColor: "#121212" },
+          headerTintColor: "#fff",
+          headerLeft: () => (
+            <Ionicons
+              name="arrow-back"
+              size={28}
+              color="#fff"
+              style={{ marginLeft: 15 }}
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        })}
+      />
+    </AgendaStack.Navigator>
   );
 }
 
@@ -213,6 +244,7 @@ function AppContent() {
         <RootStack.Screen name="Usuario" component={UsuarioStackScreen} />
         <RootStack.Screen name="Locais" component={LocaisStackScreen}/>
         <RootStack.Screen name="Eventos" component={EventosStackScreen}/>
+        <RootStack.Screen name="Agenda" component={AgendaStackScreen}/>
       </RootStack.Navigator>
     </NavigationContainer>
   );
