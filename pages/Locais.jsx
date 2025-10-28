@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -20,115 +20,47 @@ import { ThemeContext } from "../context/ThemeContext";
 export default function Locais({ navigation }) {
   const { theme } = useContext(ThemeContext);
   const [search, setSearch] = useState("");
+  const [locais, setLocais] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const locais = [
-    { 
-      nome: "Pechincha", 
-      imagem: require("../assets/fundo-locais.png"),
-      pastor: {
-        foto: require("../assets/Prs.png"),
-        nome: "Prs. Igor e Thayane Burlamaqui",
-        descricao: "Estejam conosco em um de nossos cultos:",
-        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
-        localizacao: "Estrada do Tindiba 570, Taquara",
-        instagram: "https://www.instagram.com/igrejaunitedpechincha?igsh=MW1hMzZpazEzYzF1eg==",
-        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
-      }
-    },
-    { 
-      nome: "Curicica", 
-      imagem: require("../assets/fundo-locais.png"),
-      pastor: {
-        foto: require("../assets/Prs.png"),
-        nome: "Prs. Igor e Thayane Burlamaqui",
-        descricao: "Estejam conosco em um de nossos cultos:",
-        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
-        localizacao: "Estrada do Tindiba 570, Taquara",
-        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
-        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
-      }
-    },
-    { 
-      nome: "Tijuca", 
-      imagem: require("../assets/fundo-locais.png"),
-      pastor: {
-        foto: require("../assets/Prs.png"),
-        nome: "Prs. Igor e Thayane Burlamaqui",
-        descricao: "Estejam conosco em um de nossos cultos:",
-        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
-        localizacao: "Estrada do Tindiba 570, Taquara",
-        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
-        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
-      }
-    },
-    { 
-      nome: "Campo Grande", 
-      imagem: require("../assets/fundo-locais.png"),
-      pastor: {
-        foto: require("../assets/Prs.png"),
-        nome: "Prs. Igor e Thayane Burlamaqui",
-        descricao: "Estejam conosco em um de nossos cultos:",
-        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
-        localizacao: "Estrada do Tindiba 570, Taquara",
-        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
-        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
-      }
-    },
-    { 
-      nome: "Vila da Penha", 
-      imagem: require("../assets/fundo-locais.png"),
-      pastor: {
-        foto: require("../assets/Prs.png"),
-        nome: "Prs. Igor e Thayane Burlamaqui",
-        descricao: "Estejam conosco em um de nossos cultos:",
-        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
-        localizacao: "Estrada do Tindiba 570, Taquara",
-        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
-        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
-      }
-    },
-    { 
-      nome: "São Gonçalo", 
-      imagem: require("../assets/fundo-locais.png"),
-      pastor: {
-        foto: require("../assets/Prs.png"),
-        nome: "Prs. Igor e Thayane Burlamaqui",
-        descricao: "Estejam conosco em um de nossos cultos:",
-        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
-        localizacao: "Estrada do Tindiba 570, Taquara",
-        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
-        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
-      }
-    },
-    { 
-      nome: "Barra da Tijuca", 
-      imagem: require("../assets/fundo-locais.png"),
-      pastor: {
-        foto: require("../assets/Prs.png"),
-        nome: "Prs. Igor e Thayane Burlamaqui",
-        descricao: "Estejam conosco em um de nossos cultos:",
-        horarios: ["Terças | 10h", "Quintas | 20h", "Domingo | 10h"],
-        localizacao: "Estrada do Tindiba 570, Taquara",
-        instagram: "https://www.instagram.com/igrejaunitedjacarepagua?igsh=MW1hMzZpazEzYzF1eg==",
-        spotify: "https://open.spotify.com/show/5L33woYmqlNSKHL6aWTHoF"
-      }
-    },
-  ];
+  useEffect(() => {
+    fetch("http://9233e498ae33.ngrok-free.app/api/locais/") // URL da sua API
+      .then((res) => res.json())
+      .then((data) => {
+        const formatted = data.map((local) => ({
+          nome: local.nome,
+          imagem: { uri: local.imagem },
+          pastor: {
+            foto: { uri: local.pastor_foto },
+            nome: local.pastor_nome,
+            descricao: local.descricao,
+            horarios: local.horarios.map(
+              (h) =>
+                `${["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"][h.weekday]} | ${h.hora.slice(0,5)}`
+            ),
+            localizacao: local.localizacao,
+            instagram: local.instagram,
+            spotify: local.spotify,
+          },
+        }));
+        setLocais(formatted);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
 
   const filteredLocais = locais.filter((local) =>
     local.nome.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Função para abrir links externos
   const openLink = async (url) => {
     try {
       await Linking.openURL(url);
-    } catch (err) {
+    } catch {
       Alert.alert("Erro", "Não foi possível abrir o link");
     }
   };
 
-  // Função para abrir o Maps
   const openMaps = (address) => {
     const url = Platform.select({
       ios: `http://maps.apple.com/?q=${encodeURIComponent(address)}`,
@@ -142,68 +74,74 @@ export default function Locais({ navigation }) {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <ScrollView style={styles.scroll} keyboardShouldPersistTaps="handled">
-        <Text style={[styles.title, { color: theme.text }]}>
-          Igrejas e Implantações
+      {loading ? (
+        <Text style={{ color: theme.text, textAlign: "center", marginTop: 50 }}>
+          Carregando...
         </Text>
+      ) : (
+        <ScrollView style={styles.scroll} keyboardShouldPersistTaps="handled">
+          <Text style={[styles.title, { color: theme.text }]}>
+            Igrejas e Implantações
+          </Text>
 
-        {/* Barra de busca */}
-        <View
-          style={[
-            styles.searchContainer,
-            {
-              backgroundColor:
-                theme.inputBackground ||
-                (theme.background === "#121212" || theme.background === "#000"
-                  ? "#2a2a2a"
-                  : "#e6e6e6"),
-              height: 48,
-              borderRadius: 25,
-            },
-          ]}
-        >
-          <TextInput
-            placeholder="Buscar local..."
-            placeholderTextColor={theme.textSecondary || "#999"}
-            value={search}
-            onChangeText={setSearch}
+          {/* Barra de busca */}
+          <View
             style={[
-              styles.searchInput,
+              styles.searchContainer,
               {
-                color: theme.text,
-                flex: 1,
-                paddingLeft: 15,
-                fontSize: 15,
+                backgroundColor:
+                  theme.inputBackground ||
+                  (theme.background === "#121212" || theme.background === "#000"
+                    ? "#2a2a2a"
+                    : "#e6e6e6"),
+                height: 48,
+                borderRadius: 25,
               },
             ]}
-          />
-
-          <MaterialIcons
-            name="search"
-            size={24}
-            color={theme.textSecondary || theme.text}
-            style={{ marginRight: 8
-              
-            }}
-          />
-        </View>
-
-        {filteredLocais.length > 0 ? (
-          filteredLocais.map((local, index) => (
-            <ExpandableCard
-              key={index}
-              local={local}
-              theme={theme}
-              openLink={openLink}
-              openMaps={openMaps}
+          >
+            <TextInput
+              placeholder="Buscar local..."
+              placeholderTextColor={theme.textSecondary || "#999"}
+              value={search}
+              onChangeText={setSearch}
+              style={[
+                styles.searchInput,
+                {
+                  color: theme.text,
+                  flex: 1,
+                  paddingLeft: 15,
+                  fontSize: 15,
+                },
+              ]}
             />
-          ))
-        ) : (
-          <Text style={[styles.noResults, { color: theme.textSecondary || theme.text }]}>
-            Nenhum local encontrado.
-          </Text>
-        )}
-      </ScrollView>
+
+            <MaterialIcons
+              name="search"
+              size={24}
+              color={theme.textSecondary || theme.text}
+              style={{ marginRight: 8 }}
+            />
+          </View>
+
+          {filteredLocais.length > 0 ? (
+            filteredLocais.map((local, index) => (
+              <ExpandableCard
+                key={index}
+                local={local}
+                theme={theme}
+                openLink={openLink}
+                openMaps={openMaps}
+              />
+            ))
+          ) : (
+            <Text
+              style={[styles.noResults, { color: theme.textSecondary || theme.text }]}
+            >
+              Nenhum local encontrado.
+            </Text>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -327,20 +265,16 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    justifyContent: "space-between",
+    paddingHorizontal: 8,
     marginBottom: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+    elevation: 2,
   },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-  },
-  noResults: {
-    fontSize: 16,
-    textAlign: "center",
-    marginTop: 40,
-  },
+  searchInput: { flex: 1, fontSize: 16 },
+  noResults: { fontSize: 16, textAlign: "center", marginTop: 40 },
   card: { marginBottom: 15, borderRadius: 10, overflow: "hidden" },
   cardBackground: { flex: 1, justifyContent: "center", padding: 15 },
   overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.45)", borderRadius: 10 },
@@ -358,17 +292,4 @@ const styles = StyleSheet.create({
   locationRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 10, width: "100%" },
   locationText: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
   mapIcon: { width: 50, height: 50, resizeMode: "contain" },
-
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 8,
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-
 });
