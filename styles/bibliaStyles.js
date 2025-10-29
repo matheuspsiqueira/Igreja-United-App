@@ -17,7 +17,7 @@ export default (theme) =>
       width: 160,
       alignSelf: "flex-start",
       marginBottom: 15,
-      backgroundColor: theme.inputBackground,
+      backgroundColor: theme.card,
       borderRadius: 8,
       elevation: 3,
       color: theme.text,
@@ -69,13 +69,13 @@ export default (theme) =>
     chapterButton: {
       paddingVertical: 8,
       paddingHorizontal: 12,
-      backgroundColor: theme.inputBackground,
+      backgroundColor: theme.card,
       borderRadius: 6,
       margin: 4,
       elevation: 2,
     },
     chapterButtonSelected: {
-      backgroundColor: theme.primary,
+      backgroundColor: theme.CapBiblia,
     },
     chapterText: {
       fontSize: 14,
@@ -114,7 +114,7 @@ export default (theme) =>
       color: theme.text,
       marginVertical: 10,
       borderBottomWidth: 1,
-      borderBottomColor: theme.primary,
+      borderBottomColor: theme.CapBiblia,
       paddingBottom: 5,
     },
     modalOverlay: {

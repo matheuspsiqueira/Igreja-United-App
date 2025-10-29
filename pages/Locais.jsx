@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useContext, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import {
   Alert,
   Platform,
   TextInput,
+  RefreshControl,
 } from "react-native";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
 import { ThemeContext } from "../context/ThemeContext";
@@ -22,31 +23,68 @@ export default function Locais({ navigation }) {
   const [search, setSearch] = useState("");
   const [locais, setLocais] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [resetTrigger, setResetTrigger] = useState(0); // usado para recolher todos os cards
 
-  useEffect(() => {
-    fetch("http://9233e498ae33.ngrok-free.app/api/locais/") // URL da sua API
-      .then((res) => res.json())
-      .then((data) => {
-        const formatted = data.map((local) => ({
+  const fetchLocais = async () => {
+    try {
+      const res = await fetch("http://9233e498ae33.ngrok-free.app/api/locais/");
+      const data = await res.json();
+
+      const formatted = data.map((local) => {
+        const groupedHorarios = {};
+        local.horarios.forEach((h) => {
+          const dia = [
+            "Domingo",
+            "Segunda",
+            "Terça",
+            "Quarta",
+            "Quinta",
+            "Sexta",
+            "Sábado",
+          ][h.weekday];
+          const hora = h.hora.slice(0, 5);
+          if (!groupedHorarios[dia]) groupedHorarios[dia] = [];
+          groupedHorarios[dia].push(hora);
+        });
+
+        const horariosFormatados = Object.entries(groupedHorarios).map(
+          ([dia, horas]) => `${dia} ${horas.join(" | ")}`
+        );
+
+        return {
           nome: local.nome,
           imagem: { uri: local.imagem },
           pastor: {
             foto: { uri: local.pastor_foto },
             nome: local.pastor_nome,
             descricao: local.descricao,
-            horarios: local.horarios.map(
-              (h) =>
-                `${["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"][h.weekday]} | ${h.hora.slice(0,5)}`
-            ),
+            horarios: horariosFormatados,
             localizacao: local.localizacao,
             instagram: local.instagram,
             spotify: local.spotify,
           },
-        }));
-        setLocais(formatted);
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
+        };
+      });
+
+      setLocais(formatted);
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Erro", "Não foi possível carregar os locais");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLocais();
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setResetTrigger((prev) => prev + 1); // força todos os cards a recolherem
+    fetchLocais();
   }, []);
 
   const filteredLocais = locais.filter((local) =>
@@ -79,7 +117,16 @@ export default function Locais({ navigation }) {
           Carregando...
         </Text>
       ) : (
-        <ScrollView style={styles.scroll} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          style={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
+        >
           <Text style={[styles.title, { color: theme.text }]}>
             Igrejas e Implantações
           </Text>
@@ -126,7 +173,7 @@ export default function Locais({ navigation }) {
           {filteredLocais.length > 0 ? (
             filteredLocais.map((local, index) => (
               <ExpandableCard
-                key={index}
+                key={`${index}-${resetTrigger}`} // força recriação no refresh
                 local={local}
                 theme={theme}
                 openLink={openLink}
@@ -135,7 +182,10 @@ export default function Locais({ navigation }) {
             ))
           ) : (
             <Text
-              style={[styles.noResults, { color: theme.textSecondary || theme.text }]}
+              style={[
+                styles.noResults,
+                { color: theme.textSecondary || theme.text },
+              ]}
             >
               Nenhum local encontrado.
             </Text>
@@ -148,7 +198,7 @@ export default function Locais({ navigation }) {
 
 function ExpandableCard({ local, theme, openLink, openMaps }) {
   const [expanded, setExpanded] = useState(false);
-  const animHeight = useRef(new Animated.Value(150)).current; 
+  const animHeight = useRef(new Animated.Value(150)).current;
   const animContent = useRef(new Animated.Value(0)).current;
 
   const toggleExpand = () => {
@@ -221,7 +271,10 @@ function ExpandableCard({ local, theme, openLink, openMaps }) {
             </Text>
 
             {local.pastor.horarios.map((horario, index) => (
-              <Text key={index} style={[styles.pastorHorarios, { color: theme.text }]}>
+              <Text
+                key={index}
+                style={[styles.pastorHorarios, { color: theme.text }]}
+              >
                 {horario}
               </Text>
             ))}
@@ -231,12 +284,22 @@ function ExpandableCard({ local, theme, openLink, openMaps }) {
             </Text>
 
             <View style={styles.socialIcons}>
-              <TouchableOpacity onPress={() => openLink(local.pastor.instagram)}>
-                <Entypo name="instagram" size={24} color="#C13584" style={{ marginRight: 10 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => openLink(local.pastor.spotify)}>
-                <Entypo name="spotify" size={24} color="#1DB954" />
-              </TouchableOpacity>
+              {local.pastor.instagram ? (
+                <TouchableOpacity onPress={() => openLink(local.pastor.instagram)}>
+                  <Entypo
+                    name="instagram"
+                    size={24}
+                    color="#C13584"
+                    style={{ marginRight: 10 }}
+                  />
+                </TouchableOpacity>
+              ) : null}
+
+              {local.pastor.spotify ? (
+                <TouchableOpacity onPress={() => openLink(local.pastor.spotify)}>
+                  <Entypo name="spotify" size={24} color="#1DB954" />
+                </TouchableOpacity>
+              ) : null}
             </View>
           </View>
         </View>
@@ -277,11 +340,30 @@ const styles = StyleSheet.create({
   noResults: { fontSize: 16, textAlign: "center", marginTop: 40 },
   card: { marginBottom: 15, borderRadius: 10, overflow: "hidden" },
   cardBackground: { flex: 1, justifyContent: "center", padding: 15 },
-  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.45)", borderRadius: 10 },
-  cardTitle: { fontWeight: "bold", fontSize: 26, color: "#fff", textAlign: "center" },
-  arrowIcon: { position: "absolute", bottom: 10, right: 10, backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 50 },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    borderRadius: 10,
+  },
+  cardTitle: {
+    fontWeight: "bold",
+    fontSize: 26,
+    color: "#fff",
+    textAlign: "center",
+  },
+  arrowIcon: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 50,
+  },
   extraContent: { padding: 10, overflow: "hidden" },
-  contentRow: { flexDirection: "row", alignItems: "flex-start", marginBottom: 10 },
+  contentRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 10,
+  },
   pastorPhoto: { width: 80, height: 80, borderRadius: 40, marginRight: 15 },
   contentRight: { flex: 1 },
   pastorName: { fontSize: 14, fontWeight: "bold", marginBottom: 10 },
@@ -289,7 +371,13 @@ const styles = StyleSheet.create({
   pastorHorarios: { fontSize: 14, marginVertical: 2, lineHeight: 15 },
   pastorLocation: { fontSize: 13, marginTop: 15 },
   socialIcons: { flexDirection: "row", marginTop: 5 },
-  locationRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 10, width: "100%" },
+  locationRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    marginTop: 10,
+    width: "100%",
+  },
   locationText: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
   mapIcon: { width: 50, height: 50, resizeMode: "contain" },
 });

@@ -219,7 +219,7 @@ export default function Biblia() {
         style={[styles.folderButton, styles.folderAntigo]}
         onPress={() => setAntigoAberto(!antigoAberto)}
       >
-        <Ionicons name={antigoAberto ? 'folder-open' : 'folder'} size={22} color="#A1DEA6" />
+        <Ionicons name={antigoAberto ? 'folder-open' : 'folder'} size={22} color="#53acc5ff" />
         <Text style={styles.folderTextAntigo}>Antigo Testamento</Text>
       </TouchableOpacity>
 
@@ -235,7 +235,7 @@ export default function Biblia() {
         style={[styles.folderButton, styles.folderNovo]}
         onPress={() => setNovoAberto(!novoAberto)}
       >
-        <Ionicons name={novoAberto ? 'folder-open' : 'folder'} size={22} color="#A1DEA6" />
+        <Ionicons name={novoAberto ? 'folder-open' : 'folder'} size={22} color="#53acc5ff" />
         <Text style={styles.folderTextNovo}>Novo Testamento</Text>
       </TouchableOpacity>
 

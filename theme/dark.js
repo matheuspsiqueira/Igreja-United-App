@@ -8,6 +8,9 @@ export default {
   secondary: "#aaa",
   subtitle: "#ffd97f",
 
+  CapBiblia: '#53acc5ff',
+
+
   icon: "#ed4414",
   button: "#fff"
 };
