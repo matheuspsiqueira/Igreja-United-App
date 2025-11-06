@@ -28,7 +28,7 @@ export default function Locais({ navigation }) {
 
   const fetchLocais = async () => {
     try {
-      const res = await fetch("http://9233e498ae33.ngrok-free.app/api/locais/");
+      const res = await fetch("https://5af7188494d0.ngrok-free.app/api/locais/");
       const data = await res.json();
 
       const formatted = data.map((local) => {

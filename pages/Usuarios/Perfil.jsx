@@ -73,7 +73,7 @@ export default function Perfil({ navigation }) {
           type: "image/jpeg",
         });
 
-        const response = await fetch("https://9233e498ae33.ngrok-free.app/api/upload-avatar/", {
+        const response = await fetch("https://5af7188494d0.ngrok-free.app/api/upload-avatar/", {
           method: "POST",
           headers: {
             Authorization: `Token ${token}`,
