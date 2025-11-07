@@ -11,6 +11,8 @@ import {
   StyleSheet,
   Animated,
   Easing,
+  PanResponder,
+  TextInput,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -28,7 +30,7 @@ export default function Biblia() {
   const [capitulo, setCapitulo] = useState(1);
   const [versiculos, setVersiculos] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [formatoCaixaAlta, setFormatoCaixaAlta] = useState(false);
+  const [fontSize, setFontSize] = useState(17);
   const [modalVersaoVisible, setModalVersaoVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [token, setToken] = useState(null);
@@ -271,7 +273,12 @@ const toggleMenuCores = () => {
   }, [versiculosSelecionados]);
 
   useEffect(() => { inicializarToken(); }, []);
-  useEffect(() => { if (token) restaurarProgresso(); }, [token]);
+  useEffect(() => {
+    if (token) {
+      carregarLivros();
+      restaurarProgresso();
+    }
+  }, [token]);
 
   // === CARREGAR LISTA DE LIVROS ===
   async function carregarLivros() {
@@ -285,67 +292,266 @@ const toggleMenuCores = () => {
     setModalLivrosVisible(true);
   };
 
+
+
+
+  // === PAGINAÇÃO DOS CAPITULOS ===
+const scrollRef = useRef(null);
+const carregandoRef = useRef(false);
+
+// refs para detectar toque/swipe
+const touchStartX = useRef(0);
+const touchStartY = useRef(0);
+const touchStartTime = useRef(0);
+
+// === FUNÇÕES DE PAGINAÇÃO ===
+const carregarProximoCapitulo = async () => {
+  if (carregandoRef.current) return;
+  if (!livro || !capitulo) return;
+
+  const livroInfo = livros.find((l) => l.abbrev && l.abbrev.pt === livro);
+  if (!livroInfo) {
+    await carregarLivros();
+  }
+  const info = livros.find((l) => l.abbrev && l.abbrev.pt === livro);
+  if (!info) return;
+
+  const proximo = capitulo + 1;
+  if (proximo > info.chapters) return;
+
+  try {
+    carregandoRef.current = true;
+    await carregarCapitulo(livro, proximo, versao);
+    scrollRef.current?.scrollTo?.({ y: 0, animated: false });
+  } finally {
+    carregandoRef.current = false;
+  }
+};
+
+const carregarCapituloAnterior = async () => {
+  if (carregandoRef.current) return;
+  if (!livro || !capitulo) return;
+
+  const anterior = capitulo - 1;
+  if (anterior < 1) return;
+
+  try {
+    carregandoRef.current = true;
+    await carregarCapitulo(livro, anterior, versao);
+    scrollRef.current?.scrollTo?.({ y: 0, animated: false });
+  } finally {
+    carregandoRef.current = false;
+  }
+};
+
+// ⚠️ SOMENTE DEPOIS DE DEFINIR AS FUNÇÕES, CRIA O PANRESPONDER:
+const panResponder = useRef(
+  PanResponder.create({
+    onStartShouldSetPanResponder: () => false,
+    onMoveShouldSetPanResponder: (e, gesture) => {
+      const { dx, dy } = gesture;
+      return Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy);
+    },
+    onPanResponderRelease: (e, gesture) => {
+      const { dx, dy } = gesture;
+      const THRESHOLD = 120;
+      if (Math.abs(dx) > THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+        if (dx < 0) carregarProximoCapitulo();
+        else carregarCapituloAnterior();
+      }
+    },
+  })
+).current;
+
+
+
+// === NOVOS ESTADOS PARA BUSCA ===
+const [mostrarBusca, setMostrarBusca] = useState(false);
+const [textoBusca, setTextoBusca] = useState("");
+
+// === REFERÊNCIAS PARA VERSÍCULOS ===
+const versiculoRefs = useRef({});
+
+// === FUNÇÃO DE BUSCA ===
+const executarBusca = async () => {
+  if (!textoBusca.trim()) return;
+
+  const texto = textoBusca.trim();
+
+  // Caso 1: só número -> rolar até versículo
+  if (/^\d+$/.test(texto)) {
+    const numeroVersiculo = parseInt(texto, 10);
+    const versiculoRef = versiculoRefs.current[numeroVersiculo];
+    if (versiculoRef) {
+      versiculoRef.measureLayout(
+        scrollRef.current,
+        (x, y) => scrollRef.current.scrollTo({ y, animated: true }),
+        () => {}
+      );
+    } else {
+      Alert.alert("Versículo não encontrado neste capítulo.");
+    }
+  } else {
+    // Caso 2: formato tipo "Mateus 3"
+    const partes = texto.split(" ");
+    const nome = partes[0].toLowerCase();
+    const cap = parseInt(partes[1] || "1", 10);
+
+    const livroEncontrado = livros.find((l) =>
+      l.name.toLowerCase().startsWith(nome)
+    );
+
+    if (livroEncontrado) {
+      await carregarCapitulo(livroEncontrado.abbrev.pt, cap, versao);
+      setMostrarBusca(false);
+      setTextoBusca("");
+    } else {
+      Alert.alert("Livro não encontrado.");
+    }
+  }
+};
+
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       {/* HEADER */}
       <View style={[styles.header, { borderBottomColor: theme.border, backgroundColor: theme.card }]}>
-        <TouchableOpacity>
-          <Ionicons name="search" size={24} color={theme.text} />
-        </TouchableOpacity>
+        {mostrarBusca ? (
+          <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+            <TouchableOpacity onPress={() => setMostrarBusca(false)} style={{ paddingHorizontal: 8 }}>
+              <Ionicons name="arrow-back" size={24} color={theme.text} />
+            </TouchableOpacity>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: theme.background || "#e0e0e0",
+                borderRadius: 8,
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 8,
+              }}
+            >
+              <TextInput
+                value={textoBusca}
+                onChangeText={setTextoBusca}
+                placeholder="Buscar (ex: 12 ou Mateus 3)"
+                placeholderTextColor={theme.text + "99"}
+                style={{ flex: 1, color: theme.text, fontSize: 16 }}
+                returnKeyType="search"
+                onSubmitEditing={executarBusca}
+                autoFocus
+              />
+              <TouchableOpacity onPress={executarBusca}>
+                <Ionicons name="search" size={22} color={theme.text} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          <>
+            <TouchableOpacity onPress={() => setMostrarBusca(true)}>
+              <Ionicons name="search" size={24} color={theme.text} />
+            </TouchableOpacity>
 
-        <View style={styles.headerCenter}>
-          <TouchableOpacity
-            style={[styles.headerButton, { backgroundColor: theme.buttonBackground }]}
-            onPress={abrirListaLivros}
-          >
-            <Text style={[styles.headerButtonText, { color: theme.text }]}>{nomeLivro} {capitulo}</Text>
-          </TouchableOpacity>
+            <View style={styles.headerCenter}>
+              <TouchableOpacity
+                style={[styles.headerButton, { backgroundColor: theme.buttonBackground }]}
+                onPress={abrirListaLivros}
+              >
+                <Text style={[styles.headerButtonText, { color: theme.text }]}>
+                  {nomeLivro} {capitulo}
+                </Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.headerButton, { backgroundColor: theme.buttonBackground }]}
-            onPress={() => setModalVersaoVisible(true)}
-          >
-            <Text style={[styles.headerButtonText, { color: theme.text }]}>{versao.toUpperCase()}</Text>
-          </TouchableOpacity>
-        </View>
+              <TouchableOpacity
+                style={[styles.headerButton, { backgroundColor: theme.buttonBackground }]}
+                onPress={() => setModalVersaoVisible(true)}
+              >
+                <Text style={[styles.headerButtonText, { color: theme.text }]}>
+                  {versao.toUpperCase()}
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-        <TouchableOpacity onPress={() => setFormatoCaixaAlta(!formatoCaixaAlta)}>
-          <MaterialIcons name="text-fields" size={24} color={formatoCaixaAlta ? "#53acc5ff" : theme.text} />
-        </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setFontSize((prev) => (prev === 17 ? 20 : prev === 20 ? 23 : 17))}
+            >
+              <Text style={{ fontSize: 18, color: theme.text, fontWeight: "600" }}>Aa</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </View>
 
       {/* CONTEÚDO */}
       {loading ? (
         <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#53acc5ff" />
       ) : (
-        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} contentContainerStyle={styles.verseContainer}>
-          {versiculos.map((v) => {
-            const isSelecionado = versiculosSelecionados.includes(v.number);
-            const bgColor = versiculosCores[v.number] || "transparent";
+        <ScrollView
+          ref={scrollRef}
+          scrollEventThrottle={400}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          contentContainerStyle={styles.verseContainer}
+          // --- detectors de toque para swipe horizontal ---
+          onTouchStart={(e) => {
+            const t = e.nativeEvent;
+            touchStartX.current = t.pageX ?? t.locationX ?? 0;
+            touchStartY.current = t.pageY ?? t.locationY ?? 0;
+            touchStartTime.current = Date.now();
+          }}
+          onTouchEnd={(e) => {
+            const t = e.nativeEvent;
+            const endX = t.pageX ?? t.locationX ?? 0;
+            const endY = t.pageY ?? t.locationY ?? 0;
+            const dx = endX - touchStartX.current;
+            const dy = endY - touchStartY.current;
+            const dt = Date.now() - touchStartTime.current;
 
-            return (
-              <TouchableOpacity key={v.number} onPress={() => toggleVersiculoSelecionado(v.number)} activeOpacity={0.7} style={{ marginBottom: 16 }}>
-                <Text style={{ fontSize: 17, lineHeight: 26, color: theme.text, flexWrap: "wrap" }}>
-                  <Text style={styles.verseNumber}>{v.number} </Text>
-                  <Text
-                    style={{
-                      backgroundColor: bgColor,
-                      textTransform: formatoCaixaAlta ? "uppercase" : "none",
-                      borderRadius: 2,
-                      lineHeight: 26,
-                      color: theme.text,
-                      textDecorationLine: isSelecionado ? "underline" : "none",
-                      textDecorationStyle: "dotted",
-                      textDecorationColor: "#53acc5ff",
-                    }}
-                  >
-                    {v.text.trim()}
+            // evita interferir na rolagem vertical
+            if (Math.abs(dy) > 80) return;
+
+            const MIN_DIST = 40;   // mais sensível
+            const MAX_TIME = 1500; // gestos mais lentos ainda contam
+
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > MIN_DIST && dt < MAX_TIME) {
+              if (dx < 0 && !carregandoRef.current) carregarProximoCapitulo();
+              else if (dx > 0 && !carregandoRef.current) carregarCapituloAnterior();
+            }
+          }}
+        >
+            {versiculos.map((v) => {
+              const isSelecionado = versiculosSelecionados.includes(v.number);
+              const bgColor = versiculosCores[v.number] || "transparent";
+
+              return (
+                <TouchableOpacity
+                  key={v.number}
+                  ref={(el) => (versiculoRefs.current[v.number] = el)}
+                  onPress={() => toggleVersiculoSelecionado(v.number)}
+                  activeOpacity={0.7}
+                  style={{ marginBottom: 16 }}
+                >
+                  <Text style={{ fontSize: 17, lineHeight: 26, color: theme.text, flexWrap: "wrap" }}>
+                    <Text style={styles.verseNumber}>{v.number} </Text>
+                    <Text
+                      style={{
+                        backgroundColor: versiculosCores[v.number] || "transparent",
+                        borderRadius: 2,
+                        lineHeight: fontSize * 1.5,
+                        color: theme.text,
+                        fontSize: fontSize,
+                        textDecorationLine: versiculosSelecionados.includes(v.number)
+                          ? "underline"
+                          : "none",
+                        textDecorationStyle: "dotted",
+                        textDecorationColor: "#53acc5ff",
+                      }}
+                    >
+                      {v.text.trim()}
+                    </Text>
                   </Text>
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
       )}
 
       {/* === MODAL DE LIVROS E CAPÍTULOS === */}
