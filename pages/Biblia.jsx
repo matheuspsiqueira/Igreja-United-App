@@ -372,6 +372,10 @@ const [textoBusca, setTextoBusca] = useState("");
 // === REFERÊNCIAS PARA VERSÍCULOS ===
 const versiculoRefs = useRef({});
 
+// === FUNÇÃO AUXILIAR PARA REMOVER ACENTOS ===
+const removerAcentos = (texto) =>
+  texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
 // === FUNÇÃO DE BUSCA ===
 const executarBusca = async () => {
   if (!textoBusca.trim()) return;
@@ -391,14 +395,46 @@ const executarBusca = async () => {
     } else {
       Alert.alert("Versículo não encontrado neste capítulo.");
     }
+
+  // Caso 3: formato tipo "João 3:16" ou "joao 3:16"
+  } else if (/^([a-zA-ZÀ-ÿ]+)\s+(\d+):(\d+)$/.test(texto)) {
+    const match = texto.match(/^([a-zA-ZÀ-ÿ]+)\s+(\d+):(\d+)$/);
+    const nome = removerAcentos(match[1].toLowerCase());
+    const cap = parseInt(match[2], 10);
+    const numeroVersiculo = parseInt(match[3], 10);
+
+    const livroEncontrado = livros.find(
+      (l) => removerAcentos(l.name.toLowerCase()).startsWith(nome)
+    );
+
+    if (livroEncontrado) {
+      await carregarCapitulo(livroEncontrado.abbrev.pt, cap, versao);
+      setMostrarBusca(false);
+      setTextoBusca("");
+
+      // aguarda render e rola até o versículo
+      setTimeout(() => {
+        const ref = versiculoRefs.current[numeroVersiculo];
+        if (ref) {
+          ref.measureLayout(
+            scrollRef.current,
+            (x, y) => scrollRef.current.scrollTo({ y, animated: true }),
+            () => {}
+          );
+        }
+      }, 600);
+    } else {
+      Alert.alert("Livro não encontrado.");
+    }
+
   } else {
     // Caso 2: formato tipo "Mateus 3"
     const partes = texto.split(" ");
-    const nome = partes[0].toLowerCase();
+    const nome = removerAcentos(partes[0].toLowerCase());
     const cap = parseInt(partes[1] || "1", 10);
 
     const livroEncontrado = livros.find((l) =>
-      l.name.toLowerCase().startsWith(nome)
+      removerAcentos(l.name.toLowerCase()).startsWith(nome)
     );
 
     if (livroEncontrado) {
@@ -434,7 +470,7 @@ const executarBusca = async () => {
               <TextInput
                 value={textoBusca}
                 onChangeText={setTextoBusca}
-                placeholder="Buscar (ex: 12 ou Mateus 3)"
+                placeholder="Buscar "
                 placeholderTextColor={theme.text + "99"}
                 style={{ flex: 1, color: theme.text, fontSize: 16 }}
                 returnKeyType="search"
