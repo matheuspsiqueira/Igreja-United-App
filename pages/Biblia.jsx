@@ -376,6 +376,15 @@ const versiculoRefs = useRef({});
 const removerAcentos = (texto) =>
   texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
+// === FUNÇÃO AUXILIAR PARA NORMALIZAR NOMES COM NÚMEROS (1º, 1ª, etc.)
+const normalizarNomeLivro = (texto) => {
+  return removerAcentos(texto)
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, "") // remove º, ª, etc.
+    .replace(/\s+/g, "") // remove espaços
+    .replace(/^(\d)([a-z])/, "$1 $2"); // separa "1samuel" → "1 samuel"
+};
+
 // === FUNÇÃO DE BUSCA ===
 const executarBusca = async () => {
   if (!textoBusca.trim()) return;
@@ -395,24 +404,27 @@ const executarBusca = async () => {
     } else {
       Alert.alert("Versículo não encontrado neste capítulo.");
     }
+    return;
+  }
 
-  // Caso 3: formato tipo "João 3:16" ou "joao 3:16"
-  } else if (/^([a-zA-ZÀ-ÿ]+)\s+(\d+):(\d+)$/.test(texto)) {
-    const match = texto.match(/^([a-zA-ZÀ-ÿ]+)\s+(\d+):(\d+)$/);
-    const nome = removerAcentos(match[1].toLowerCase());
+  // Caso 3: formato tipo "João 3:16", "1 João 3:16", etc.
+  if (/^([\d]?\s*[a-zA-ZÀ-ÿºª]+)\s+(\d+):(\d+)$/.test(texto)) {
+    const match = texto.match(/^([\d]?\s*[a-zA-ZÀ-ÿºª]+)\s+(\d+):(\d+)$/);
+    const nome = normalizarNomeLivro(match[1]);
     const cap = parseInt(match[2], 10);
     const numeroVersiculo = parseInt(match[3], 10);
 
-    const livroEncontrado = livros.find(
-      (l) => removerAcentos(l.name.toLowerCase()).startsWith(nome)
-    );
+    const livroEncontrado = livros.find((l) => {
+      const nomeLivro = normalizarNomeLivro(l.name);
+      const abrevLivro = normalizarNomeLivro(l.abbrev.pt);
+      return nomeLivro.startsWith(nome) || abrevLivro.startsWith(nome);
+    });
 
     if (livroEncontrado) {
       await carregarCapitulo(livroEncontrado.abbrev.pt, cap, versao);
       setMostrarBusca(false);
       setTextoBusca("");
 
-      // aguarda render e rola até o versículo
       setTimeout(() => {
         const ref = versiculoRefs.current[numeroVersiculo];
         if (ref) {
@@ -426,16 +438,20 @@ const executarBusca = async () => {
     } else {
       Alert.alert("Livro não encontrado.");
     }
+    return;
+  }
 
-  } else {
-    // Caso 2: formato tipo "Mateus 3"
-    const partes = texto.split(" ");
-    const nome = removerAcentos(partes[0].toLowerCase());
-    const cap = parseInt(partes[1] || "1", 10);
+  // Caso 2: formato tipo "Mateus 3", "1 João 2"
+  if (/^([\d]?\s*[a-zA-ZÀ-ÿºª]+)\s+(\d+)$/.test(texto)) {
+    const match = texto.match(/^([\d]?\s*[a-zA-ZÀ-ÿºª]+)\s+(\d+)$/);
+    const nome = normalizarNomeLivro(match[1]);
+    const cap = parseInt(match[2], 10);
 
-    const livroEncontrado = livros.find((l) =>
-      removerAcentos(l.name.toLowerCase()).startsWith(nome)
-    );
+    const livroEncontrado = livros.find((l) => {
+      const nomeLivro = normalizarNomeLivro(l.name);
+      const abrevLivro = normalizarNomeLivro(l.abbrev.pt);
+      return nomeLivro.startsWith(nome) || abrevLivro.startsWith(nome);
+    });
 
     if (livroEncontrado) {
       await carregarCapitulo(livroEncontrado.abbrev.pt, cap, versao);
@@ -444,8 +460,34 @@ const executarBusca = async () => {
     } else {
       Alert.alert("Livro não encontrado.");
     }
+    return;
   }
+
+  // 🆕 Caso 4: apenas o nome do livro → abrir capítulo 1
+  if (/^[\d]?\s*[a-zA-ZÀ-ÿºª]+$/.test(texto)) {
+    const nome = normalizarNomeLivro(texto);
+
+    const livroEncontrado = livros.find((l) => {
+      const nomeLivro = normalizarNomeLivro(l.name);
+      const abrevLivro = normalizarNomeLivro(l.abbrev.pt);
+      return nomeLivro.startsWith(nome) || abrevLivro.startsWith(nome);
+    });
+
+    if (livroEncontrado) {
+      await carregarCapitulo(livroEncontrado.abbrev.pt, 1, versao);
+      setMostrarBusca(false);
+      setTextoBusca("");
+    } else {
+      Alert.alert("Livro não encontrado.");
+    }
+    return;
+  }
+
+  // Caso padrão
+  Alert.alert("Formato não reconhecido. Tente '1 João 3', 'João 3:16' ou apenas 'João'.");
 };
+
+
 
 
   return (
