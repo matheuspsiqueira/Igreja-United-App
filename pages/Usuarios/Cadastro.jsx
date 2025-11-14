@@ -65,7 +65,7 @@ export default function Cadastro({ navigation }) {
     }
 
     try {
-      const response = await fetch("https://5af7188494d0.ngrok-free.app/api/cadastro/", {
+      const response = await fetch("https://a61b3999ebcb.ngrok-free.app/api/cadastro/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
