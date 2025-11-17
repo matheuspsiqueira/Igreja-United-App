@@ -160,9 +160,9 @@ const toggleMenuCores = () => {
 
   const aplicarCorVersiculos = (cor) => {
     const novasCores = { ...versiculosCores };
-    versiculosSelecionados.forEach((v) => {
-      if (cor === "none") delete novasCores[v];
-      else novasCores[v] = cor;
+    versiculosSelecionados.forEach((id) => {
+      if (cor === "none") delete novasCores[id];
+      else novasCores[id] = cor;
     });
     setVersiculosCores(novasCores);
     toggleMenuCores();
@@ -253,9 +253,9 @@ const toggleMenuCores = () => {
     setRefreshing(false);
   };
 
-  const toggleVersiculoSelecionado = (numero) => {
+  const toggleVersiculoSelecionado = (id) => {
     setVersiculosSelecionados((prev) =>
-      prev.includes(numero) ? prev.filter((n) => n !== numero) : [...prev, numero]
+      prev.includes(id) ? prev.filter((n) => n !== id) : [...prev, id]
     );
   };
 
@@ -394,7 +394,8 @@ const executarBusca = async () => {
   // Caso 1: só número -> rolar até versículo
   if (/^\d+$/.test(texto)) {
     const numeroVersiculo = parseInt(texto, 10);
-    const versiculoRef = versiculoRefs.current[numeroVersiculo];
+    const id = `${livro}-${capitulo}-${numeroVersiculo}`;
+    const ref = versiculoRefs.current[id];
     if (versiculoRef) {
       versiculoRef.measureLayout(
         scrollRef.current,
@@ -596,29 +597,29 @@ const executarBusca = async () => {
           }}
         >
             {versiculos.map((v) => {
-              const isSelecionado = versiculosSelecionados.includes(v.number);
-              const bgColor = versiculosCores[v.number] || "transparent";
+              const id = `${livro}-${capitulo}-${v.number}`;
+              const isSelecionado = versiculosSelecionados.includes(id);
+              const bgColor = versiculosCores[id] || "transparent";
 
               return (
                 <TouchableOpacity
-                  key={v.number}
-                  ref={(el) => (versiculoRefs.current[v.number] = el)}
-                  onPress={() => toggleVersiculoSelecionado(v.number)}
+                  key={id}
+                  ref={(el) => (versiculoRefs.current[id] = el)}
+                  onPress={() => toggleVersiculoSelecionado(id)}
                   activeOpacity={0.7}
                   style={{ marginBottom: 16 }}
                 >
-                  <Text style={{ fontSize: 17, lineHeight: 26, color: theme.text, flexWrap: "wrap" }}>
+                  <Text style={{ fontSize: 17, lineHeight: 26, color: theme.text }}>
                     <Text style={styles.verseNumber}>{v.number} </Text>
+
                     <Text
                       style={{
-                        backgroundColor: versiculosCores[v.number] || "transparent",
+                        backgroundColor: bgColor,
                         borderRadius: 2,
                         lineHeight: fontSize * 1.5,
                         color: theme.text,
                         fontSize: fontSize,
-                        textDecorationLine: versiculosSelecionados.includes(v.number)
-                          ? "underline"
-                          : "none",
+                        textDecorationLine: isSelecionado ? "underline" : "none",
                         textDecorationStyle: "dotted",
                         textDecorationColor: "#53acc5ff",
                       }}
