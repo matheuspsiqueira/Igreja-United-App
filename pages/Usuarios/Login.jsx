@@ -39,7 +39,7 @@ export default function Login({ navigation }) {
 
     try {
       const response = await fetch(
-        "https://a61b3999ebcb.ngrok-free.app/api/login/",
+        "https://22f2cfafff2a.ngrok-free.app/api/login/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

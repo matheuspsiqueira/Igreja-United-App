@@ -280,6 +280,11 @@ const toggleMenuCores = () => {
     }
   }, [token]);
 
+  const limparSelecao = () => {
+    setVersiculosSelecionados([]);
+    if (menuCoresAberto) toggleMenuCores();
+  };
+
   // === CARREGAR LISTA DE LIVROS ===
   async function carregarLivros() {
     if (!token) return;
@@ -348,13 +353,19 @@ const carregarCapituloAnterior = async () => {
 const panResponder = useRef(
   PanResponder.create({
     onStartShouldSetPanResponder: () => false,
+
     onMoveShouldSetPanResponder: (e, gesture) => {
       const { dx, dy } = gesture;
-      return Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy);
+
+      // aceita gestos menores e mais suaves
+      return Math.abs(dx) > 15 && Math.abs(dx) > Math.abs(dy);
     },
+
     onPanResponderRelease: (e, gesture) => {
       const { dx, dy } = gesture;
-      const THRESHOLD = 120;
+
+      const THRESHOLD = 70; // menor, mais sensível
+
       if (Math.abs(dx) > THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
         if (dx < 0) carregarProximoCapitulo();
         else carregarCapituloAnterior();
@@ -690,6 +701,11 @@ const executarBusca = async () => {
           <Animated.View style={[styles.botaoMenu, { backgroundColor: "#ffd700" }, getButtonStyle(btnAnim1)]}>
             <TouchableOpacity onPress={toggleMenuCores}>
               <Ionicons name="pencil" size={30} color="#fff" />
+            </TouchableOpacity>
+          </Animated.View>
+          <Animated.View style={[styles.menuButton, getButtonStyle(btnAnim3)]}>
+            <TouchableOpacity onPress={limparSelecao} style={styles.botaoMenu}>
+              <MaterialIcons name="close" size={22} color="#fff" />
             </TouchableOpacity>
           </Animated.View>
         </View>
