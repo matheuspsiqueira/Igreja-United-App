@@ -23,7 +23,7 @@ export default function Eventos() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("https://22f2cfafff2a.ngrok-free.app/api/eventos/");
+      const response = await fetch("https://dcc446f53059.ngrok-free.app/api/eventos/");
       if (!response.ok) throw new Error("Erro ao buscar eventos");
       const data = await response.json();
       setEventos(data);

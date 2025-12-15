@@ -15,7 +15,7 @@ export default function Episodios({ route, navigation }) {
 
   const fetchEpisodios = () => {
     setLoading(true);
-    fetch(`https://22f2cfafff2a.ngrok-free.app/api/episodios/?serie=${serieId}`)
+    fetch(`https://dcc446f53059.ngrok-free.app/api/episodios/?serie=${serieId}`)
       .then(response => response.json())
       .then(data => {
         const sorted = data.sort((a, b) => a.numero - b.numero);

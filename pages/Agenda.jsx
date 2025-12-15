@@ -13,7 +13,7 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { ThemeContext } from "../context/ThemeContext";
 
-const API_URL = "https://22f2cfafff2a.ngrok-free.app/api/agenda/campos/";
+const API_URL = "https://dcc446f53059.ngrok-free.app/api/agenda/campos/";
 
 export default function Agenda() {
   const { theme } = useContext(ThemeContext);
