@@ -11,7 +11,7 @@ export default function AvisosSection() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("https://dcc446f53059.ngrok-free.app/api/avisos/");
+      const response = await fetch("https://3d2295ea2c20.ngrok-free.app/api/avisos/");
       if (!response.ok) throw new Error("Erro ao buscar avisos");
       const data = await response.json();
       setAvisos(data);

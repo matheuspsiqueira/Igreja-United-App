@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Alert, Switch, Image } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Alert, Switch, Image, Linking } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ThemeContext } from "../../context/ThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -73,7 +73,7 @@ export default function Perfil({ navigation }) {
           type: "image/jpeg",
         });
 
-        const response = await fetch("https://dcc446f53059.ngrok-free.app/api/upload-avatar/", {
+        const response = await fetch("https://c6828b7294a3.ngrok-free.app/api/upload-avatar/", {
           method: "POST",
           headers: {
             Authorization: `Token ${token}`,
@@ -138,7 +138,7 @@ export default function Perfil({ navigation }) {
           <MaterialIcons name="chevron-right" size={24} style={[styles.arrowIcon, { color: theme.secondary }]} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => Linking.openURL('https://c6828b7294a3.ngrok-free.app')}>
           <View style={styles.menuItemLeft}>
             <MaterialIcons name="group" size={24} color={theme.text} />
             <Text style={[styles.menuText, { color: theme.text }]}>Voluntariado</Text>

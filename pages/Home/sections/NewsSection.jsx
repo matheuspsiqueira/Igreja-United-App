@@ -11,7 +11,7 @@ export default function NewsSection() {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const res = await fetch("https://dcc446f53059.ngrok-free.app/api/news/latest/");
+        const res = await fetch("https://3d2295ea2c20.ngrok-free.app/api/news/latest/");
         if (!res.ok) throw new Error("Erro ao buscar vídeo");
         const data = await res.json();
 
